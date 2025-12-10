@@ -47,7 +47,7 @@ namespace Backend.Util.Management
                 }
 
                 // Search for all existing singleton instance.
-                var instances = FindObjectsOfType<T>();
+                var instances = FindObjectsByType<T>(FindObjectsSortMode.None);
 
                 var length = instances.Length;
                 if (0 < length)
