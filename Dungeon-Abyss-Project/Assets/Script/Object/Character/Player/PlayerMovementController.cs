@@ -8,19 +8,16 @@ namespace Backend.Object.Character.Player
 {
     public class PlayerMovementController : MovementController
     {
+        [SerializeField] private State _playerState = State.Idle;
         private PlayerInput_Actions _playerInput;
         private PlayerStatus _playerStatus;
-        
-        public bool IsAiming;
-        private bool _isSprinting;
-
-        private Vector3 _inputVector;
-        private Vector3 _moveDirection;
+        private Camera _camera;
         private Vector2 _mousePosition;
 
-        [SerializeField] private State _playerState = State.Idle;
-
-        private Camera _camera;
+        public Vector3 MoveDirection { get; private set; }
+        public Vector3 InputVector { get; private set; }
+        public bool IsAiming { get; private set; }
+        public bool IsSprinting { get; private set; }
 
         protected override void Awake()
         {
@@ -78,7 +75,7 @@ namespace Backend.Object.Character.Player
 
         private void UpdateState()
         {
-            if(_inputVector == Vector3.zero)
+            if(InputVector == Vector3.zero)
             {
                 _playerState = State.Idle;
                 return;
@@ -90,7 +87,7 @@ namespace Backend.Object.Character.Player
             }
             else 
             {
-                _playerState = _isSprinting ? State.Run : State.Walk;
+                _playerState = IsSprinting ? State.Run : State.Walk;
             }
         }
 
@@ -100,9 +97,9 @@ namespace Backend.Object.Character.Player
             if (IsAiming)
             {
                 RotateMouse();
-            }else if (_moveDirection != Vector3.zero)
+            }else if (MoveDirection != Vector3.zero)
             {
-                Quaternion targetRot = Quaternion.LookRotation(_moveDirection);
+                Quaternion targetRot = Quaternion.LookRotation(MoveDirection);
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, _playerStatus.RotSpeed * Time.deltaTime);
             }
         }
@@ -111,11 +108,9 @@ namespace Backend.Object.Character.Player
         {
             if(_playerState == State.Idle)
             {
-                _moveDirection = Vector3.zero;
+                MoveDirection = Vector3.zero;
                 return;
             }
-
-            _playerState = State.Walk;
 
             //카메라 기준 회전
             Vector3 worldDirection;
@@ -123,17 +118,17 @@ namespace Backend.Object.Character.Player
             {
                 var camForward = Vector3.ProjectOnPlane(_camera.transform.forward, Vector3.up).normalized;
                 var camRight = Vector3.ProjectOnPlane(_camera.transform.right, Vector3.up).normalized;
-                worldDirection = (camForward * _inputVector.y + camRight * _inputVector.x).normalized;
+                worldDirection = (camForward * InputVector.y + camRight * InputVector.x).normalized;
             }
             else
             {
-                worldDirection = new Vector3(_inputVector.x, 0, _inputVector.y).normalized;
+                worldDirection = new Vector3(InputVector.x, 0, InputVector.y).normalized;
             }
 
-            _moveDirection = worldDirection;
+            MoveDirection = worldDirection;
         
             float currentSpeed = (_playerState == State.Run) ? _playerStatus.SprintSpeed : _playerStatus.WalkSpeed;
-            Vector3 movement = _moveDirection * currentSpeed * Time.deltaTime;
+            Vector3 movement = MoveDirection * currentSpeed * Time.deltaTime;
             _rigidbody.MovePosition(_rigidbody.position + movement);
         }
 
@@ -163,7 +158,7 @@ namespace Backend.Object.Character.Player
         #region Input Callbacks
         private void OnMove(InputAction.CallbackContext context)
         {
-            _inputVector = context.ReadValue<Vector2>();
+            InputVector = context.ReadValue<Vector2>();
         }
 
         private void OnLook(InputAction.CallbackContext context)
@@ -173,7 +168,7 @@ namespace Backend.Object.Character.Player
 
         private void OnSprint(InputAction.CallbackContext context)
         {
-            _isSprinting = context.ReadValueAsButton();
+            IsSprinting = context.ReadValueAsButton();
         }
 
         private void OnAim(InputAction.CallbackContext context)
