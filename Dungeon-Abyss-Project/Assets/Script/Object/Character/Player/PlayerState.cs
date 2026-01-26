@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Backend.Object.Character
 {
-    enum State
+    enum PlayerState
     {
         Idle,
         Walk,

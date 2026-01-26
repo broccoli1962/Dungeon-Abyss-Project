@@ -7,11 +7,15 @@ namespace Backend.Object.Character
         [field: SerializeField] public string CharacterName { get; set; }
         [field: SerializeField] public float CurrentHealth { get; set; }
         [field: SerializeField] public float MaxHealth { get; set; }
-        [field: SerializeField] public float MoveSpeed { get; set; }
+        [field: SerializeField] public float RotSpeed { get; set; }
+        [field: SerializeField] public float WalkSpeed { get; set; }
+        [field: SerializeField] public float SprintSpeed { get; set; }
         [field: SerializeField] public float PhysicsDamage { get; set; }
         [field: SerializeField] public float MagicDamage { get; set; }
-        [field: SerializeField, Range(0, 1)] public float _sightRange; 
-        public float SightRange{   
+
+        [SerializeField, Range(0, 1)] public float _sightRange; 
+        public float SightRange
+        {
             get 
             {
                 return _sightRange * 360f;
