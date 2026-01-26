@@ -8,7 +8,7 @@ namespace Backend.Object.Character.Player
 {
     public class PlayerMovementController : MovementController
     {
-        [SerializeField] private State _playerState = State.Idle;
+        [SerializeField] private PlayerState _playerState = PlayerState.Idle;
         private PlayerInput_Actions _playerInput;
         private PlayerStatus _playerStatus;
         private Camera _camera;
@@ -77,17 +77,17 @@ namespace Backend.Object.Character.Player
         {
             if(InputVector == Vector3.zero)
             {
-                _playerState = State.Idle;
+                _playerState = PlayerState.Idle;
                 return;
             }
 
             if (IsAiming)
             {
-                _playerState = State.Walk;
+                _playerState = PlayerState.Walk;
             }
             else 
             {
-                _playerState = IsSprinting ? State.Run : State.Walk;
+                _playerState = IsSprinting ? PlayerState.Run : PlayerState.Walk;
             }
         }
 
@@ -106,7 +106,7 @@ namespace Backend.Object.Character.Player
 
         private void HandleMovement()
         {
-            if(_playerState == State.Idle)
+            if(_playerState == PlayerState.Idle)
             {
                 MoveDirection = Vector3.zero;
                 return;
@@ -127,7 +127,7 @@ namespace Backend.Object.Character.Player
 
             MoveDirection = worldDirection;
         
-            float currentSpeed = (_playerState == State.Run) ? _playerStatus.SprintSpeed : _playerStatus.WalkSpeed;
+            float currentSpeed = (_playerState == PlayerState.Run) ? _playerStatus.SprintSpeed : _playerStatus.WalkSpeed;
             Vector3 movement = MoveDirection * currentSpeed * Time.deltaTime;
             _rigidbody.MovePosition(_rigidbody.position + movement);
         }
