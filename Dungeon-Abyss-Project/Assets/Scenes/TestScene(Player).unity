@@ -283,6 +283,7 @@ MonoBehaviour:
   <PhysicsDamage>k__BackingField: 2
   <MagicDamage>k__BackingField: 0
   _sightRange: 0
+  <AttackRange>k__BackingField: 1.5
 --- !u!114 &246239604
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -364,10 +365,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 691bafe28b64cab49ae212ee25867b5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _viewAngle: 90
   _detectRadius: 3
   _targetLayer:
     serializedVersion: 2
     m_Bits: 256
+  _obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  _maxTarget: 5
 --- !u!135 &246239606
 SphereCollider:
   m_ObjectHideFlags: 0
