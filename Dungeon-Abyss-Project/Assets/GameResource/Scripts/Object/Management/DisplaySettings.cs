@@ -12,6 +12,7 @@ namespace Backend.Object.Management
         private const string PREF_HEIGHT = "DisplaySettings_Height";
         private const string PREF_REFRESH_NUM = "DisplaySettings_RefreshNumerator";
         private const string PREF_REFRESH_DEN = "DisplaySettings_RefreshDenominator";
+        private const string PREF_FULLSCREEN = "DisplaySettings_FullScreen";
 
         /// <summary>
         /// 모니터가 지원하는 해상도를 가로×세로 기준으로 중복 제거해 반환한다.
@@ -73,6 +74,14 @@ namespace Backend.Object.Management
         }
 
         /// <summary>
+        /// 저장된 전체화면 여부. 값이 없으면 현재 화면 상태를 사용한다.
+        /// </summary>
+        public static bool IsFullScreen =>
+            PlayerPrefs.HasKey(PREF_FULLSCREEN)
+                ? PlayerPrefs.GetInt(PREF_FULLSCREEN) == 1
+                : Screen.fullScreen;
+
+        /// <summary>
         /// 목록의 인덱스로 해상도를 적용하고 저장한다.
         /// </summary>
         public static void ApplyIndex(IReadOnlyList<Resolution> resolutions, int index)
@@ -84,23 +93,25 @@ namespace Backend.Object.Management
         }
 
         /// <summary>
-        /// 부트 시 저장된 해상도를 복원한다. 저장된 값이 없으면 아무 것도 하지 않는다.
+        /// 전체화면 여부를 저장하고 현재 해상도에 즉시 적용한다.
+        /// </summary>
+        public static void SetFullScreen(bool fullScreen)
+        {
+            PlayerPrefs.SetInt(PREF_FULLSCREEN, fullScreen ? 1 : 0);
+            ApplyCurrent();
+        }
+
+        /// <summary>
+        /// 부트 시 저장된 해상도·전체화면을 복원한다. 저장된 값이 없으면 아무 것도 하지 않는다.
         /// </summary>
         public static void ApplySaved()
         {
-            if (!PlayerPrefs.HasKey(PREF_WIDTH) || !PlayerPrefs.HasKey(PREF_HEIGHT))
+            if (!PlayerPrefs.HasKey(PREF_WIDTH)
+                && !PlayerPrefs.HasKey(PREF_HEIGHT)
+                && !PlayerPrefs.HasKey(PREF_FULLSCREEN))
                 return;
 
-            int width = PlayerPrefs.GetInt(PREF_WIDTH);
-            int height = PlayerPrefs.GetInt(PREF_HEIGHT);
-            uint numerator = (uint)Mathf.Max(1, PlayerPrefs.GetInt(PREF_REFRESH_NUM, 60));
-            uint denominator = (uint)Mathf.Max(1, PlayerPrefs.GetInt(PREF_REFRESH_DEN, 1));
-
-            Screen.SetResolution(
-                width,
-                height,
-                Screen.fullScreenMode,
-                new RefreshRate { numerator = numerator, denominator = denominator });
+            ApplyCurrent();
         }
 
         private static void ApplyResolution(Resolution resolution)
@@ -109,12 +120,21 @@ namespace Backend.Object.Management
             PlayerPrefs.SetInt(PREF_HEIGHT, resolution.height);
             PlayerPrefs.SetInt(PREF_REFRESH_NUM, (int)resolution.refreshRateRatio.numerator);
             PlayerPrefs.SetInt(PREF_REFRESH_DEN, (int)Mathf.Max(1, resolution.refreshRateRatio.denominator));
+            ApplyCurrent();
+        }
+
+        private static void ApplyCurrent()
+        {
+            int width = PlayerPrefs.GetInt(PREF_WIDTH, Screen.width);
+            int height = PlayerPrefs.GetInt(PREF_HEIGHT, Screen.height);
+            uint numerator = (uint)Mathf.Max(1, PlayerPrefs.GetInt(PREF_REFRESH_NUM, 60));
+            uint denominator = (uint)Mathf.Max(1, PlayerPrefs.GetInt(PREF_REFRESH_DEN, 1));
 
             Screen.SetResolution(
-                resolution.width,
-                resolution.height,
-                Screen.fullScreenMode,
-                resolution.refreshRateRatio);
+                width,
+                height,
+                IsFullScreen ? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed,
+                new RefreshRate { numerator = numerator, denominator = denominator });
         }
 
         private static int CompareResolution(Resolution a, Resolution b)

@@ -19,6 +19,7 @@ namespace DdaIT
             base.OnOpen();
 
             BindResolution();
+            BindFullScreen();
             BindVolumes();
 
             View.CloseButton.OnClickAsObservable()
@@ -57,11 +58,25 @@ namespace DdaIT
                 .AddTo(_disposables);
         }
 
+        private void BindFullScreen()
+        {
+            var toggle = View.FullScreenToggle;
+            toggle.SetIsOnWithoutNotify(DisplaySettings.IsFullScreen);
+
+            Observable.FromEvent<UnityAction<bool>, bool>(
+                    h => new UnityAction<bool>(h),
+                    h => toggle.onValueChanged.AddListener(h),
+                    h => toggle.onValueChanged.RemoveListener(h))
+                .Subscribe(DisplaySettings.SetFullScreen)
+                .AddTo(_disposables);
+        }
+
         private void BindVolumes()
         {
             BindSlider(View.MasterVolumeSlider, AudioManager.GetMasterVolume(), AudioManager.SetMasterVolume);
             BindSlider(View.BgmVolumeSlider, AudioManager.GetBgmVolume(), AudioManager.SetBgmVolume);
             BindSlider(View.SfxVolumeSlider, AudioManager.GetSfxVolume(), AudioManager.SetSfxVolume);
+            BindSlider(View.VoiceVolumeSlider, AudioManager.GetVoiceVolume(), AudioManager.SetVoiceVolume);
         }
 
         private void BindSlider(Slider slider, float value, System.Action<float> setter)

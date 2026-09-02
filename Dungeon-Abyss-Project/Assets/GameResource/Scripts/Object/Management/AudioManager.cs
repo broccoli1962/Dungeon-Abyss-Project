@@ -20,6 +20,7 @@ namespace Backend.Object.Management
         private const string PREF_MASTER_VOLUME = "AudioManager_MasterVolume";
         private const string PREF_BGM_VOLUME = "AudioManager_BgmVolume";
         private const string PREF_SFX_VOLUME = "AudioManager_SfxVolume";
+        private const string PREF_VOICE_VOLUME = "AudioManager_VoiceVolume";
 
         // 로드된 클립을 캐싱할 딕셔너리
         private readonly Dictionary<string, AudioClip> _clips = new();
@@ -39,6 +40,7 @@ namespace Backend.Object.Management
         private const string MIXER_MASTER_PARAM = "Master";
         private const string MIXER_BGM_PARAM = "Background";
         private const string MIXER_SFX_PARAM = "Effect";
+        private const string MIXER_VOICE_PARAM = "Voice";
         private const string MIXER_BGM_GROUP = "Background";
         private const string MIXER_SFX_GROUP = "Effect";
         private const float MUTE_DB = -80f;
@@ -327,11 +329,13 @@ namespace Backend.Object.Management
             ApplyMasterMixerVolume();
             ApplyBgmMixerVolume(IsBgmEnabled);
             ApplySfxMixerVolume(IsSfxEnabled);
+            ApplyVoiceMixerVolume();
         }
 
         private float MasterVolume => PlayerPrefs.GetFloat(PREF_MASTER_VOLUME, 1f);
         private float BgmVolume => PlayerPrefs.GetFloat(PREF_BGM_VOLUME, 1f);
         private float SfxVolume => PlayerPrefs.GetFloat(PREF_SFX_VOLUME, 1f);
+        private float VoiceVolume => PlayerPrefs.GetFloat(PREF_VOICE_VOLUME, 1f);
 
         private void ApplyMasterMixerVolume()
         {
@@ -351,6 +355,12 @@ namespace Backend.Object.Management
             _mixer.SetFloat(MIXER_SFX_PARAM, enabled ? LinearToDb(SfxVolume) : MUTE_DB);
         }
 
+        private void ApplyVoiceMixerVolume()
+        {
+            if (_mixer == null) return;
+            _mixer.SetFloat(MIXER_VOICE_PARAM, LinearToDb(VoiceVolume));
+        }
+
         private void SetMasterVolume_Internal(float linear)
         {
             PlayerPrefs.SetFloat(PREF_MASTER_VOLUME, Mathf.Clamp01(linear));
@@ -367,6 +377,12 @@ namespace Backend.Object.Management
         {
             PlayerPrefs.SetFloat(PREF_SFX_VOLUME, Mathf.Clamp01(linear));
             ApplySfxMixerVolume(IsSfxEnabled);
+        }
+
+        private void SetVoiceVolume_Internal(float linear)
+        {
+            PlayerPrefs.SetFloat(PREF_VOICE_VOLUME, Mathf.Clamp01(linear));
+            ApplyVoiceMixerVolume();
         }
 
         private static float LinearToDb(float linear)
@@ -470,6 +486,11 @@ namespace Backend.Object.Management
         public static float GetSfxVolume() => Instance.SfxVolume;
 
         /// <summary>
+        /// 저장된 음성 볼륨을 반환합니다 (0~1).
+        /// </summary>
+        public static float GetVoiceVolume() => Instance.VoiceVolume;
+
+        /// <summary>
         /// 마스터 볼륨을 설정합니다 (0~1 선형 값, 내부적으로 dB 변환).
         /// </summary>
         public static void SetMasterVolume(float linear) => Instance.SetMasterVolume_Internal(linear);
@@ -483,6 +504,11 @@ namespace Backend.Object.Management
         /// SFX 볼륨을 설정합니다 (0~1 선형 값, 내부적으로 dB 변환).
         /// </summary>
         public static void SetSfxVolume(float linear) => Instance.SetSfxVolume_Internal(linear);
+
+        /// <summary>
+        /// 음성 볼륨을 설정합니다 (0~1 선형 값, 내부적으로 dB 변환).
+        /// </summary>
+        public static void SetVoiceVolume(float linear) => Instance.SetVoiceVolume_Internal(linear);
 
         /// <summary>
         /// BGM 재생 (페이드 인 적용)
