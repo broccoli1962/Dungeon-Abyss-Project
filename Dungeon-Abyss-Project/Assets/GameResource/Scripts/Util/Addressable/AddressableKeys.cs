@@ -58,6 +58,7 @@ namespace DdaIT.AddressableKey
                 { "TitlePanel", "Assets/GameResource/Prefab/UI/TitlePanel.prefab" },
                 { "UIBlocker", "Assets/GameResource/Prefab/UI/UIBlocker.prefab" },
                 { "UIRoot", "Assets/GameResource/Prefab/UI/UIRoot.prefab" },
+                { "OptionPopup", "Assets/GameResource/Prefab/UI/Popup/OptionPopup.prefab" },
             };
 
             public static string Get<T>() => Keys.TryGetValue(typeof(T).Name, out var key) ? key : null;

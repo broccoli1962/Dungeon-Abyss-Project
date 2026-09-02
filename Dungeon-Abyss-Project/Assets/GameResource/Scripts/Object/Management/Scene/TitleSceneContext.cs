@@ -6,7 +6,9 @@ namespace DdaIT.Scene
     public sealed class TitleSceneContext : SceneContext
     {
         public override UniTask PreloadAsync()
-            => UIManager.PreloadAsync<TitlePanel>();
+            => UniTask.WhenAll(
+                UIManager.PreloadAsync<TitlePanel>(),
+                UIManager.PreloadAsync<OptionPopup>());
 
         public override async UniTask EnterAsync()
             => await UIManager.OpenAsync<TitlePanel>();

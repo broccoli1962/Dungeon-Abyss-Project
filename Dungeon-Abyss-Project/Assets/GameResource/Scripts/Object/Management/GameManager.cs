@@ -21,6 +21,7 @@ namespace Backend.Object.Management
 
         private async UniTask InitializeCore_Internal()
         {
+            DisplaySettings.ApplySaved();
             await AudioManager.InitMixer();
             //TableManager.Init();
         }
