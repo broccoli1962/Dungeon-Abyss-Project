@@ -17,7 +17,7 @@ alwaysApply: false
  UIView.cs           — UIView (UIManager 비관리 서브뷰, Show/Hide)
  UIView.Generic.cs   — UIView<TPresenter> (MVP 결합)
  UIPresenter.cs      — UIPresenter / UIPresenter<TView>
- UILayer.cs          — HUD / Panel / Navigation / Popup
+ UILayer.cs          — HUD / Panel / Navigation / Popup / System
  UIRegistry.cs       — 레이어별 RectTransform 매핑
 
 .../Management/
@@ -88,12 +88,18 @@ var hud = await UIManager.OpenAsync<BattleHud>();
 
 ## UILayer 와 UIRegistry
 
-- `UILayer`: `HUD` / `Panel` / `Navigation` / `Popup` (위로 갈수록 상위 레이어).
+- `UILayer`: `HUD` / `Panel` / `Navigation` / `Popup` / `System` (위로 갈수록 상위 레이어).
 - 씬에 `UIRegistry` 컴포넌트를 한 번 배치하고, 인스펙터에서 레이어별 `RectTransform` 을 매핑.
 - `UIManager` 가 오픈 시 자동으로 해당 레이어 루트 아래로 reparent + `SetAsLastSibling`.
 - 모든 신규 UI 는 `Layer` 프로퍼티를 올바르게 지정해야 함 (베이스 클래스 디폴트 사용 권장).
-- 레이어 간 렌더 순서는 UIRoot 프리팹에서 각 레이어 Canvas 의 `sortingOrder` (또는 sibling 순서)로 `HUD < Panel < Navigation < Popup` 이 되도록 보장한다.
+- 레이어 간 렌더 순서는 UIRoot 프리팹에서 각 레이어 Canvas 의 `sortingOrder` (또는 sibling 순서)로 `HUD < Panel < Navigation < Popup < System` 이 되도록 보장한다.
 - 각 레이어 루트(`Layer_HUD` 등)는 빈 앵커다. 자식 UI 는 씬에 정적으로 두지 않고 `UIManager` 오픈 시 reparent 된다.
+
+### System 레이어 — 부트/씬 전환 커튼 전용
+
+- `SplashPanel`, `LoadingPanel` 처럼 씬 전환 중 화면을 가리는 커튼만 `UILayer.System` 을 쓴다. 그 외 신규 UI 는 사용하지 않는다.
+- 이 레이어 UI 의 오픈/닫기·페이드·진행률 갱신은 **`AppFlow` 가 소유**한다 (`Scene/AppFlow.cs`). `UIManager` 는 열고 닫는 통로일 뿐 로딩 전용 API 를 갖지 않는다.
+- `UIManager.CloseAllUIAsync()` 는 `UILayer.System` UI 를 닫지 않고 건너뛴다 — 씬 전환 중 커튼이 함께 꺼지는 것을 막기 위함이다.
 
 ### Navigation 레이어 — Panel 위 / Popup 아래 상주 UI
 

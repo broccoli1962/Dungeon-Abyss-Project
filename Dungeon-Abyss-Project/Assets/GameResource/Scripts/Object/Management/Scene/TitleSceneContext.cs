@@ -3,12 +3,12 @@ using Cysharp.Threading.Tasks;
 
 namespace DdaIT.Scene
 {
-    public class TitleSceneContext : SceneContext
+    public sealed class TitleSceneContext : SceneContext
     {
-        protected override UniTask OnBootReadyAsync()
-        {
-            UIManager.OpenAsync<TitlePanel>();
-            return UniTask.CompletedTask;
-        }
+        public override UniTask PreloadAsync()
+            => UIManager.PreloadAsync<TitlePanel>();
+
+        public override async UniTask EnterAsync()
+            => await UIManager.OpenAsync<TitlePanel>();
     }
 }

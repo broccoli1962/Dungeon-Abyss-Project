@@ -10,7 +10,6 @@ namespace DdaIT.AddressableKey
             private static readonly Dictionary<string, string> Keys = new Dictionary<string, string>()
             {
                 { "AudioSource", "Assets/GameResource/Prefab/InGame/AudioSource.prefab" },
-                { "Boot", "Assets/GameResource/Prefab/InGame/Boot.prefab" },
             };
 
             public static string Get<T>() => Keys.TryGetValue(typeof(T).Name, out var key) ? key : null;
@@ -54,6 +53,8 @@ namespace DdaIT.AddressableKey
         {
             private static readonly Dictionary<string, string> Keys = new Dictionary<string, string>()
             {
+                { "LoadingPanel", "Assets/GameResource/Prefab/UI/LoadingPanel.prefab" },
+                { "SplashPanel", "Assets/GameResource/Prefab/UI/SplashPanel.prefab" },
                 { "TitlePanel", "Assets/GameResource/Prefab/UI/TitlePanel.prefab" },
                 { "UIBlocker", "Assets/GameResource/Prefab/UI/UIBlocker.prefab" },
                 { "UIRoot", "Assets/GameResource/Prefab/UI/UIRoot.prefab" },

@@ -1,21 +1,17 @@
 using Cysharp.Threading.Tasks;
-using UnityEngine;
 
 namespace Backend.Object.Management
 {
     /// <summary>
-    /// 각 씬의 진입점(씬 부트). 앱 코어(Boot) 초기화가 끝난 뒤 씬 전용 초기화를 수행한다.
-    /// 씬마다 이 클래스를 상속한 컴포넌트를 하나 배치한다.
-    /// - 진입: Boot 준비 완료를 기다린 뒤 OnEnterAsync 호출
-    /// - 이탈: 씬 언로드 시 OnExit 호출 (앱 종료 중에는 호출하지 않음)
+    /// 씬 하나를 책임지는 진입점. 씬에 배치하지 않으며 <see cref="AppFlow"/> 가 단계별로 호출한다.
+    /// - PreloadAsync: 씬 활성화 전. 씬 로드와 병렬로 실행된다.
+    /// - EnterAsync:   씬 활성화 후. 여기서 UI/오브젝트를 조립한다.
+    /// - ExitAsync:    다음 씬 로드 전. 이전 씬이 아직 살아있는 상태에서 정리한다.
     /// </summary>
-    public abstract class SceneContext : SceneContextBase
+    public abstract class SceneContext
     {
-        protected sealed override async UniTask OnEnterAsync(){
-            await Boot.WaitUntilReadyAsync();
-            await OnBootReadyAsync();
-        }
-
-        protected abstract UniTask OnBootReadyAsync();
+        public virtual UniTask PreloadAsync() => UniTask.CompletedTask;
+        public abstract UniTask EnterAsync();
+        public virtual UniTask ExitAsync() => UniTask.CompletedTask;
     }
 }
