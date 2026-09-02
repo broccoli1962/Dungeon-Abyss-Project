@@ -17,6 +17,9 @@ namespace Backend.Object.Management
         // PlayerPrefs 키
         private const string PREF_BGM_ENABLED = "AudioManager_BgmEnabled";
         private const string PREF_SFX_ENABLED = "AudioManager_SfxEnabled";
+        private const string PREF_MASTER_VOLUME = "AudioManager_MasterVolume";
+        private const string PREF_BGM_VOLUME = "AudioManager_BgmVolume";
+        private const string PREF_SFX_VOLUME = "AudioManager_SfxVolume";
 
         // 로드된 클립을 캐싱할 딕셔너리
         private readonly Dictionary<string, AudioClip> _clips = new();
@@ -33,8 +36,12 @@ namespace Backend.Object.Management
         private AudioMixerGroup _bgmGroup;
         private AudioMixerGroup _sfxGroup;
         private const string AUDIO_SOURCE_POOL_KEY = "AudioMixer";
-        private const string MIXER_BGM_PARAM = "BGMVolume";
-        private const string MIXER_SFX_PARAM = "SFXVolume";
+        private const string MIXER_MASTER_PARAM = "Master";
+        private const string MIXER_BGM_PARAM = "Background";
+        private const string MIXER_SFX_PARAM = "Effect";
+        private const string MIXER_BGM_GROUP = "Background";
+        private const string MIXER_SFX_GROUP = "Effect";
+        private const float MUTE_DB = -80f;
 
         // 설정 프로퍼티
         public bool IsBgmEnabled
@@ -311,41 +318,60 @@ namespace Backend.Object.Management
                 return;
             }
 
-            var bgmGroups = _mixer.FindMatchingGroups("BGM");
-            var sfxGroups = _mixer.FindMatchingGroups("SFX");
+            var bgmGroups = _mixer.FindMatchingGroups(MIXER_BGM_GROUP);
+            var sfxGroups = _mixer.FindMatchingGroups(MIXER_SFX_GROUP);
 
             _bgmGroup = bgmGroups.Length > 0 ? bgmGroups[0] : null;
             _sfxGroup = sfxGroups.Length > 0 ? sfxGroups[0] : null;
 
-            // 저장된 On/Off 상태를 Mixer에 반영
+            ApplyMasterMixerVolume();
             ApplyBgmMixerVolume(IsBgmEnabled);
             ApplySfxMixerVolume(IsSfxEnabled);
+        }
+
+        private float MasterVolume => PlayerPrefs.GetFloat(PREF_MASTER_VOLUME, 1f);
+        private float BgmVolume => PlayerPrefs.GetFloat(PREF_BGM_VOLUME, 1f);
+        private float SfxVolume => PlayerPrefs.GetFloat(PREF_SFX_VOLUME, 1f);
+
+        private void ApplyMasterMixerVolume()
+        {
+            if (_mixer == null) return;
+            _mixer.SetFloat(MIXER_MASTER_PARAM, LinearToDb(MasterVolume));
         }
 
         private void ApplyBgmMixerVolume(bool enabled)
         {
             if (_mixer == null) return;
-            _mixer.SetFloat(MIXER_BGM_PARAM, enabled ? 0f : -80f);
+            _mixer.SetFloat(MIXER_BGM_PARAM, enabled ? LinearToDb(BgmVolume) : MUTE_DB);
         }
 
         private void ApplySfxMixerVolume(bool enabled)
         {
             if (_mixer == null) return;
-            _mixer.SetFloat(MIXER_SFX_PARAM, enabled ? 0f : -80f);
+            _mixer.SetFloat(MIXER_SFX_PARAM, enabled ? LinearToDb(SfxVolume) : MUTE_DB);
+        }
+
+        private void SetMasterVolume_Internal(float linear)
+        {
+            PlayerPrefs.SetFloat(PREF_MASTER_VOLUME, Mathf.Clamp01(linear));
+            ApplyMasterMixerVolume();
         }
 
         private void SetBgmVolume_Internal(float linear)
         {
-            if (_mixer == null) return;
-            float db = Mathf.Log10(Mathf.Max(linear, 0.0001f)) * 20f;
-            _mixer.SetFloat(MIXER_BGM_PARAM, db);
+            PlayerPrefs.SetFloat(PREF_BGM_VOLUME, Mathf.Clamp01(linear));
+            ApplyBgmMixerVolume(IsBgmEnabled);
         }
 
         private void SetSfxVolume_Internal(float linear)
         {
-            if (_mixer == null) return;
-            float db = Mathf.Log10(Mathf.Max(linear, 0.0001f)) * 20f;
-            _mixer.SetFloat(MIXER_SFX_PARAM, db);
+            PlayerPrefs.SetFloat(PREF_SFX_VOLUME, Mathf.Clamp01(linear));
+            ApplySfxMixerVolume(IsSfxEnabled);
+        }
+
+        private static float LinearToDb(float linear)
+        {
+            return Mathf.Log10(Mathf.Max(linear, 0.0001f)) * 20f;
         }
 
         #endregion
@@ -427,6 +453,26 @@ namespace Backend.Object.Management
         /// AudioMixer 에셋을 로드하고 BGM/SFX 그룹을 초기화합니다. Boot 초기화 시 1회 호출됩니다.
         /// </summary>
         public static UniTask InitMixer() => Instance.InitMixer_InternalAsync();
+
+        /// <summary>
+        /// 저장된 마스터 볼륨을 반환합니다 (0~1).
+        /// </summary>
+        public static float GetMasterVolume() => Instance.MasterVolume;
+
+        /// <summary>
+        /// 저장된 BGM 볼륨을 반환합니다 (0~1).
+        /// </summary>
+        public static float GetBgmVolume() => Instance.BgmVolume;
+
+        /// <summary>
+        /// 저장된 SFX 볼륨을 반환합니다 (0~1).
+        /// </summary>
+        public static float GetSfxVolume() => Instance.SfxVolume;
+
+        /// <summary>
+        /// 마스터 볼륨을 설정합니다 (0~1 선형 값, 내부적으로 dB 변환).
+        /// </summary>
+        public static void SetMasterVolume(float linear) => Instance.SetMasterVolume_Internal(linear);
 
         /// <summary>
         /// BGM 볼륨을 설정합니다 (0~1 선형 값, 내부적으로 dB 변환).
