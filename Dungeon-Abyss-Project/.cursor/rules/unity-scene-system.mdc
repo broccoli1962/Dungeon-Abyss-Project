@@ -8,31 +8,50 @@ alwaysApply: false
 
 ## 씬 진입점 (SceneContext)
 
-씬마다 `SceneContext` 파생 컴포넌트를 하나 배치한다 (예: `LobbyContext`, `InGameContext`). 코어 부트(`Boot.WaitUntilReadyAsync`) 완료 후 다음 훅이 호출된다.
+`SceneContext` 는 `MonoBehaviour` 가 아닌 일반 abstract 클래스다. 씬에 배치하지 않으며, `SceneId` 별로 `SceneContexts` 레지스트리(팩토리)에 등록하고 `AppFlow` 가 단계별로 직접 `await` 한다.
 
-- `protected override UniTask OnEnterAsync()` — 씬 진입 시 1회 실행. **해당 씬을 구성하는 UI 묶음을 여기서 오픈한다.**
-- `protected virtual void OnExit()` — 씬 언로드 시 호출 (앱 종료 중에는 미호출).
+- `PreloadAsync()` — 씬 활성화 **전**. 씬 로드와 병렬로 실행된다 (Addressable 프리로드 등).
+- `EnterAsync()` — 씬 활성화 **후** 1회 실행. **해당 씬을 구성하는 UI 묶음을 여기서 오픈한다.**
+- `ExitAsync()` — 다음 씬 로드 **전**, 이전 씬이 아직 살아있는 상태에서 호출 (앱 종료 중에는 미호출). 구독 해제·풀 반환 등 비동기 정리를 여기서 처리한다.
 
 ```csharp
 public sealed class LobbyContext : SceneContext
 {
-    protected override UniTask OnEnterAsync()
+    public override UniTask PreloadAsync()
+        => UIManager.PreloadAsync<LobbyPanel>();
+
+    public override async UniTask EnterAsync()
     {
-        UIManager.CloseAllUI();
-        UIManager.OpenAsync<LobbyPanel>().Forget();
-        UIManager.OpenAsync<TopNavBar>().Forget();
-        UIManager.OpenAsync<BottomNavBar>().Forget();
-        return UniTask.CompletedTask;
+        await UIManager.OpenAsync<LobbyPanel>();
+        await UIManager.OpenAsync<TopNavBar>();
+        await UIManager.OpenAsync<BottomNavBar>();
     }
 }
 ```
+
+`Scene/SceneContexts.cs` 에 팩토리를 등록한다 (인스턴스는 캐시하지 않고 진입마다 새로 생성):
+
+```csharp
+[SceneId.Lobby] = () => new LobbyContext(),
+```
+
+등록되지 않은 `SceneId` 는 `SceneContexts.Create` 가 `null` 을 반환하며, 이 경우 `AppFlow` 는 커튼만 걷고 넘어간다 (예: 에디터에서 임의의 테스트 씬을 직접 Play).
 
 ### 책임 분리 원칙
 
 - 씬을 구성하는 UI 묶음(예: 로비 = `LobbyPanel` + `TopNavBar` + `BottomNavBar`)을 결정하고 오픈하는 것은 **SceneContext 의 책임**이다.
 - 개별 Panel/View 는 형제 UI(NavBar 등)를 **직접 오픈하지 않는다**. 자기 자신의 동작만 책임진다.
 - UI 간 통신은 static `Observable` 등 진입 순서에 무관한 채널을 사용한다 (인스턴스 직접 참조 X).
-- 씬 전환 시 `UIManager.CloseAllUI()` 가 활성 UI 와 백 스택을 정리하므로, SceneContext 에서 개별 Close 호출은 보통 불필요하다.
+- 씬 전환 시 `AppFlow.LoadSceneAsync` 가 `ExitAsync` 이후 `UIManager.CloseAllUIAsync()` 로 활성 UI 와 백 스택을 정리하므로, `SceneContext` 에서 개별 Close 호출은 보통 불필요하다.
+
+## 부트 + 씬 전환 (AppFlow)
+
+부트스트랩과 씬 전환은 `Scene/AppFlow.cs` 한 파일의 선형 흐름이다. `LoadingScene` 같은 스플래시 전용 씬이나 씬마다 배치하는 `Boot` 프리팹은 없다.
+
+- 앱 시작 1회: `[RuntimeInitializeOnLoadMethod(BeforeSceneLoad)]` 로 진입 → 코드 생성 `BootCurtain`(즉시 검은 화면) → `SplashPanel` 오픈 후 커튼 제거 → `GameManager.InitializeCore()` → 첫 씬의 `SceneContext.PreloadAsync`/`EnterAsync`.
+- 씬 전환: `AppFlow.LoadSceneAsync(SceneId)` 가 `LoadingPanel` 커튼을 직접 들고 페이드/진행률을 구동하며, `allowSceneActivation = false` 게이트로 씬이 활성화되기 전에 대상 씬의 `PreloadAsync` 를 병렬로 끝낸다.
+- 커튼(Splash/Loading) 연출의 주인은 `AppFlow` 다. `UIManager` 는 타입을 모르는 UI 스위치로만 쓰이며 로딩 전용 API를 갖지 않는다.
+- `AppFlow.WaitUntilReadyAsync()` 로 부트스트랩 완료(코어 초기화 + 첫 씬 진입)를 대기할 수 있다.
 
 ## 새 Manager 추가
 

@@ -17,9 +17,10 @@ namespace Backend.Object.Management
     /// - Open / Close: 풀이 이미 만들어진 UI 의 동기 오픈/닫기
     /// - OpenAsync (동적 오픈): Addressable 로 풀을 만들고 첫 인스턴스 반환
     /// - PreloadAsync: Addressable 로 풀만 미리 생성 (오픈하지 않음)
-    /// - ShowLoadingAsync / HideLoading: 씬 전환용 LoadingPanel
     /// - CloseDynamic (동적 닫기): 닫음과 동시에 해당 UI 의 풀 자체를 해제
     /// - PopBack: 모바일 뒤로가기 / PC ESC. PuzzleControl.UI.Cancel 액션으로 직접 구독.
+    /// System 레이어(스플래시/로딩 커튼 등)의 연출은 AppFlow 가 인스턴스를 직접 들고 담당하며,
+    /// UIManager 는 해당 레이어를 CloseAllUI 대상에서 제외하는 정책만 갖는다.
     /// </summary>
     public class UIManager : SingletonGameObject<UIManager>
     {
@@ -62,7 +63,6 @@ namespace Backend.Object.Management
             if (_registry != null)
             {
                 _registryReady.TrySetResult();
-                PreloadAsync_Internal<LoadingPanel>(preloadCount: 1).Forget();
             }
             else
             {
@@ -88,9 +88,6 @@ namespace Backend.Object.Management
                 Debug.LogError("[UIManager] UIRoot 프리팹에 UIRegistry 컴포넌트가 없습니다.");
 
             _registryReady.TrySetResult();
-
-            // 씬 전환 직전에 Addressable 로드가 걸리지 않도록 LoadingPanel 풀을 미리 데운다.
-            await PreloadAsync_Internal<LoadingPanel>(preloadCount: 1);
         }
 
         private void OnDestroy()
@@ -165,29 +162,6 @@ namespace Backend.Object.Management
 
             if (pool == null)
                 Debug.LogError($"[UIManager] Failed to preload pool for {typeof(T).Name} (key={key}).");
-        }
-
-        private async UniTask ShowLoadingAsync_Internal(string message)
-        {
-            await PreloadAsync_Internal<LoadingPanel>(preloadCount: 1);
-
-            if (_active.TryGetValue(typeof(LoadingPanel), out var existing) && existing != null)
-            {
-                if (existing is LoadingPanel openPanel)
-                    openPanel.SetMessage(message);
-                return;
-            }
-
-            var panel = Open_Internal<LoadingPanel>();
-            panel?.SetMessage(message);
-        }
-
-        private void HideLoading_Internal()
-        {
-            if (!_active.TryGetValue(typeof(LoadingPanel), out var ui) || ui == null)
-                return;
-
-            Close_Internal((LoadingPanel)ui);
         }
 
         #endregion
@@ -399,8 +373,8 @@ namespace Backend.Object.Management
                 for (var i = 0; i < snapshot.Count; i++)
                 {
                     var ui = snapshot[i];
-                    // 씬 전환 중 LoadingPanel 은 CloseAllUI 대상에서 제외한다.
-                    if (ui is LoadingPanel)
+                    // System 레이어(스플래시/로딩 커튼 등)는 AppFlow 가 직접 관리하므로 CloseAllUI 대상에서 제외한다.
+                    if (ui.Layer == UILayer.System)
                         continue;
 
                     closeTasks.Add(RunCloseAsync(ui, releasePool: false));
@@ -415,11 +389,10 @@ namespace Backend.Object.Management
             }
 
             _backStack.Clear();
-            if (_active.TryGetValue(typeof(LoadingPanel), out var loading)
-                && loading != null
-                && loading.HandleBackButton)
+            foreach (var ui in _active.Values)
             {
-                _backStack.Push(loading);
+                if (ui != null && ui.Layer == UILayer.System && ui.HandleBackButton)
+                    _backStack.Push(ui);
             }
 
             UnblockUI_Internal();
@@ -447,18 +420,6 @@ namespace Backend.Object.Management
         /// </summary>
         public static UniTask PreloadAsync<T>(string addressableKey = null, int preloadCount = 1) where T : UIBase
             => Instance.PreloadAsync_Internal<T>(addressableKey, preloadCount);
-
-        /// <summary>
-        /// 프리로드된 LoadingPanel 을 오픈한다. 씬 전환 직전에 호출한다.
-        /// </summary>
-        public static UniTask ShowLoadingAsync(string message = "Loading...")
-            => Instance.ShowLoadingAsync_Internal(message);
-
-        /// <summary>
-        /// LoadingPanel 을 닫는다. 씬 진입 UI 준비가 끝난 뒤 호출한다.
-        /// </summary>
-        public static void HideLoading()
-            => Instance.HideLoading_Internal();
 
         /// <summary>
         /// UI 를 닫고 풀로 반환한다 (풀은 유지).

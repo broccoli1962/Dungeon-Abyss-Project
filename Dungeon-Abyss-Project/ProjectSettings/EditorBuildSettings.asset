@@ -7,7 +7,7 @@ EditorBuildSettings:
   m_Scenes:
   - enabled: 1
     path: Assets/Scenes/TitleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    guid: 83b61ab3e14b1a04eafff0d18c348a38
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 57a4760bf3efe9e44a5cf28b8e42ca4a, type: 2}
     com.unity.dt.app-ui: {fileID: 11400000, guid: 99f9c9493070a9d4c979a8fec7c5a8d3, type: 2}
