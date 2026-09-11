@@ -10,6 +10,9 @@ namespace DdaIT.AddressableKey
             private static readonly Dictionary<string, string> Keys = new Dictionary<string, string>()
             {
                 { "AudioSource", "Assets/GameResource/Prefab/InGame/AudioSource.prefab" },
+                { "HostRunLoop", "Assets/GameResource/Prefab/InGame/HostRunLoop.prefab" },
+                { "Player", "Assets/GameResource/Prefab/InGame/Player/Player.prefab" },
+                { "PlayerFollowCamera", "Assets/GameResource/Prefab/InGame/Player/PlayerFollowCamera.prefab" },
             };
 
             public static string Get<T>() => Keys.TryGetValue(typeof(T).Name, out var key) ? key : null;
@@ -43,6 +46,8 @@ namespace DdaIT.AddressableKey
                 { "UISquareLineMask", "Assets/GameResource/Images/GameUI/Borders/UISquareLineMask.png" },
                 { "UISquareLineMask2", "Assets/GameResource/Images/GameUI/Borders/UISquareLineMask2.png" },
                 { "Square", "Assets/GameResource/Images/GameUI/Diagram/Square.png" },
+                { "SquareBorder", "Assets/GameResource/Images/GameUI/Elements/SquareBorder.png" },
+                { "AdventureBag_AI", "Assets/GameResource/Images/GameUI/Icon/AdventureBag_AI.png" },
             };
 
             public static string Get<T>() => Keys.TryGetValue(typeof(T).Name, out var key) ? key : null;
@@ -53,11 +58,12 @@ namespace DdaIT.AddressableKey
         {
             private static readonly Dictionary<string, string> Keys = new Dictionary<string, string>()
             {
-                { "LoadingPanel", "Assets/GameResource/Prefab/UI/LoadingPanel.prefab" },
-                { "SplashPanel", "Assets/GameResource/Prefab/UI/SplashPanel.prefab" },
-                { "TitlePanel", "Assets/GameResource/Prefab/UI/TitlePanel.prefab" },
-                { "UIBlocker", "Assets/GameResource/Prefab/UI/UIBlocker.prefab" },
-                { "UIRoot", "Assets/GameResource/Prefab/UI/UIRoot.prefab" },
+                { "LoadingPanel", "Assets/GameResource/Prefab/UI/Common/LoadingPanel.prefab" },
+                { "PlayerHudPanel", "Assets/GameResource/Prefab/UI/Common/PlayerHudPanel.prefab" },
+                { "SplashPanel", "Assets/GameResource/Prefab/UI/Common/SplashPanel.prefab" },
+                { "UIBlocker", "Assets/GameResource/Prefab/UI/Common/UIBlocker.prefab" },
+                { "UIRoot", "Assets/GameResource/Prefab/UI/Common/UIRoot.prefab" },
+                { "TitlePanel", "Assets/GameResource/Prefab/UI/Panel/TitlePanel.prefab" },
                 { "OptionPopup", "Assets/GameResource/Prefab/UI/Popup/OptionPopup.prefab" },
             };
 

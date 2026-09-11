@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Backend.Util.Attribute
+namespace DdaIT.Util.Attribute
 {
     public class AliasAttribute : PropertyAttribute
     {

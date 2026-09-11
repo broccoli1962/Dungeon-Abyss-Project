@@ -1,8 +1,8 @@
 ﻿using System;
-using Backend.Util.Debug;
+using DdaIT.Util.Debug;
 using UnityEngine;
 
-namespace Backend.Util.Management
+namespace DdaIT.Util.Management
 {
     public class ApplicationManager : Singleton<ApplicationManager>
     {

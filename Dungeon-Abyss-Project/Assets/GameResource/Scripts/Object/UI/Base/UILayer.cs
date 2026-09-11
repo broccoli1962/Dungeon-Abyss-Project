@@ -1,4 +1,4 @@
-namespace Backend.Object.UI
+namespace DdaIT.Object.UI
 {
     /// <summary>
     /// UI 가 배치될 Canvas 레이어 구분 (위로 갈수록 상위 렌더).

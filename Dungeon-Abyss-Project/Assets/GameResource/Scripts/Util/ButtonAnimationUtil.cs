@@ -10,7 +10,7 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-namespace Backend.Util
+namespace DdaIT.Util
 {
     public static class ButtonAnimationUtil
     {

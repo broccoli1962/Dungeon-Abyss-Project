@@ -1,4 +1,4 @@
-﻿using Backend.Util.Addressable;
+﻿using DdaIT.Util.Addressable;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEngine;
 
-namespace Backend.Editor
+namespace DdaIT.Editor
 {
     public static class AddressableKeyGenerator
     {
@@ -31,7 +31,7 @@ namespace Backend.Editor
             string folderPath = genSettings.GetFolderPath();
             string rootNameSpace = genSettings.rootNameSpace.Trim();
             string subNameSpace = "AddressableKey";
-            string finalNameSpace = string.IsNullOrEmpty(rootNameSpace) ? $"Backend.AddressableKey" : $"{rootNameSpace}.{subNameSpace}";
+            string finalNameSpace = string.IsNullOrEmpty(rootNameSpace) ? $"DdaIT.AddressableKey" : $"{rootNameSpace}.{subNameSpace}";
 
             bool useNamespace = !string.IsNullOrEmpty(finalNameSpace);
             string tap = useNamespace ? "    " : "";

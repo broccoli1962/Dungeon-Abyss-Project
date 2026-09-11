@@ -1,10 +1,10 @@
 
-using Backend.Util.Management;
+using DdaIT.Util.Management;
 using Cysharp.Threading.Tasks;
 using R3;
 using UnityEngine;
 
-namespace Backend.Object.Management
+namespace DdaIT.Object.Management
 {
     public class GameManager : SingletonGameObject<GameManager>
     {

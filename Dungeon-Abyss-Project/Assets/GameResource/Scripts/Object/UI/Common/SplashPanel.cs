@@ -4,7 +4,7 @@ using LitMotion.Extensions;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Backend.Object.UI
+namespace DdaIT.Object.UI
 {
     /// <summary>
     /// 앱 최초 진입 스플래시. AppFlow 가 인스턴스를 직접 들고 로고 페이드인 / 전체 페이드아웃을 구동한다.
@@ -12,7 +12,6 @@ namespace Backend.Object.UI
     /// </summary>
     public class SplashPanel : UIPanel
     {
-        [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private Image _logo;
         [SerializeField] private float _logoFadeInDuration = 1f;
         [SerializeField] private float _fadeOutDuration = 0.5f;
@@ -27,9 +26,6 @@ namespace Backend.Object.UI
         protected override void OnOpen()
         {
             base.OnOpen();
-
-            if (_canvasGroup != null)
-                _canvasGroup.alpha = 1f;
 
             if (_logo != null)
             {
@@ -53,11 +49,8 @@ namespace Backend.Object.UI
         /// <summary>패널 전체를 알파 1 → 0 으로 페이드아웃한다. CanvasGroup 이 없으면 즉시 완료한다.</summary>
         public UniTask FadeOutAsync()
         {
-            if (_canvasGroup == null)
-                return UniTask.CompletedTask;
-
             return LMotion.Create(1f, 0f, _fadeOutDuration)
-                .BindToAlpha(_canvasGroup)
+                .BindToColorA(_logo)
                 .ToUniTask();
         }
     }

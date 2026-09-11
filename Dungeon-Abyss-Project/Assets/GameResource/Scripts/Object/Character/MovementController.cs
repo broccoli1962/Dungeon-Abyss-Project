@@ -1,11 +1,16 @@
+using DdaIT.Util;
 using UnityEngine;
 
-namespace Backend.Object.Character
+namespace DdaIT.Object.Character
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class MovementController : MonoBehaviour
+    public class MovementController : CachedMonobehaviour
     {
         protected Rigidbody _rigidbody;
+
+        public Vector3 SimulationPosition => _rigidbody.position;
+        public Quaternion SimulationRotation => _rigidbody.rotation;
+        public float SimulationYaw => _rigidbody.rotation.eulerAngles.y;
 
         protected virtual void Awake()
         {
@@ -14,7 +19,7 @@ namespace Backend.Object.Character
 
         public Vector3 GetDirection(Vector3 targetPos)
         {
-            Vector3 calDirection = targetPos - transform.position;
+            Vector3 calDirection = targetPos - SimulationPosition;
             calDirection.y = 0f;
 
             return calDirection.normalized;
@@ -22,8 +27,7 @@ namespace Backend.Object.Character
 
         public float GetDistance(Vector3 targetPos)
         {
-            float distance = Vector3.Distance(transform.position, targetPos);
-            return distance;
+            return Vector3.Distance(SimulationPosition, targetPos);
         }
 
         public float GetDistance(Vector3 originPos, Vector3 targetPos)

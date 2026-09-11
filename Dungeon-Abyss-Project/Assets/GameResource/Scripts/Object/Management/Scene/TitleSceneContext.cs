@@ -1,7 +1,6 @@
-using Backend.Object.Management;
 using Cysharp.Threading.Tasks;
 
-namespace DdaIT.Scene
+namespace DdaIT.Object.Management
 {
     public sealed class TitleSceneContext : SceneContext
     {

@@ -3,7 +3,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace Backend.Util.Debug
+namespace DdaIT.Util.Debug
 {
     public static class Debugger
     {

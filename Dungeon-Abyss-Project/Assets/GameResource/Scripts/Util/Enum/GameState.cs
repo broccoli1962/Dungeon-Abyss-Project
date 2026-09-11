@@ -1,4 +1,4 @@
-namespace Backend
+namespace DdaIT
 {
     public enum GameState
     {

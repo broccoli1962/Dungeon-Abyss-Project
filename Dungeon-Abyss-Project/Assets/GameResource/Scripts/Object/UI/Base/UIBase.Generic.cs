@@ -1,4 +1,4 @@
-namespace Backend.Object.UI
+namespace DdaIT.Object.UI
 {
     /// <summary>
     /// 강타입 Presenter 를 가지는 UI View 베이스.

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Backend.Object.Management
+namespace DdaIT.Object.Management
 {
     /// <summary>
     /// 해상도 설정을 PlayerPrefs 에 저장하고 <see cref="Screen.SetResolution"/> 으로 적용한다.

@@ -1,4 +1,4 @@
-namespace Backend.Object.UI
+namespace DdaIT.Object.UI
 {
     /// <summary>
     /// 메인 화면/메뉴 등 패널 UI 베이스 (비MVP).

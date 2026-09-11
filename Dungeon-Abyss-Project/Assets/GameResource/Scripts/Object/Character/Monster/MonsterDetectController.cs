@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Backend.Object.Character.Monster
+namespace DdaIT.Object.Character.Monster
 {
     public class MonsterDetectController : MonoBehaviour
     {

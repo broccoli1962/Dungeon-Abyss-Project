@@ -1,11 +1,11 @@
 using System.Collections.Generic;
-using Backend.Util.Management;
+using DdaIT.Util.Management;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
-namespace Backend.Object.Management
+namespace DdaIT.Object.Management
 {
     public class ResourceManager : SingletonGameObject<ResourceManager>
     {

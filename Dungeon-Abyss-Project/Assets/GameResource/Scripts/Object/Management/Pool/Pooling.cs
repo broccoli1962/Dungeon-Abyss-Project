@@ -1,4 +1,4 @@
-﻿using Backend.Util.Interface;
+﻿using DdaIT.Util.Interface;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.Pool;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
-namespace Backend.Object.Management.Pool
+namespace DdaIT.Object.Management.Pool
 {
     public class Pooling<T> : IClearable where T : Component
     {

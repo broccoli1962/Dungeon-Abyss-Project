@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using DdaIT.Scene;
 
-namespace Backend.Object.Management
+namespace DdaIT.Object.Management
 {
     /// <summary>
     /// <see cref="SceneId"/> 별 <see cref="SceneContext"/> 팩토리 레지스트리.
@@ -14,6 +13,7 @@ namespace Backend.Object.Management
         private static readonly Dictionary<SceneId, Func<SceneContext>> Factories = new()
         {
             [SceneId.TitleScene] = () => new TitleSceneContext(),
+            [SceneId.GameScene] = () => new GameSceneContext(),
         };
 
         public static SceneContext Create(SceneId id)

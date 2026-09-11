@@ -1,4 +1,4 @@
-namespace Backend.Object.UI
+namespace DdaIT.Object.UI
 {
     /// <summary>
     /// 모달 팝업 UI 베이스 (비MVP). 기본 레이어는 Popup, 뒤로가기 키 처리는 기본 ON.

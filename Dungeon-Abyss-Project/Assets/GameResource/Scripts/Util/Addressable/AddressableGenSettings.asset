@@ -11,6 +11,6 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f5c55b0689e29c4abe21b129dc3bff2, type: 3}
   m_Name: AddressableGenSettings
-  m_EditorClassIdentifier: Assembly-CSharp-Editor::Backend.Util.Addressable.AddressableGenSettings
+  m_EditorClassIdentifier: Assembly-CSharp-Editor::DdaIT.Util.Addressable.AddressableGenSettings
   rootNameSpace: DdaIT
   targetFolder: {fileID: 102900000, guid: b8689e74f44ebed43acdd3127fc3bc1e, type: 3}

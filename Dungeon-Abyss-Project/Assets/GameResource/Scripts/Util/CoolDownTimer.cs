@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Backend.Util
+namespace DdaIT.Util
 {
     public class CoolDownTimer
     {
