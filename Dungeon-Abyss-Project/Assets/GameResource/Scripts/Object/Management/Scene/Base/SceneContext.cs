@@ -1,6 +1,6 @@
 using Cysharp.Threading.Tasks;
 
-namespace Backend.Object.Management
+namespace DdaIT.Object.Management
 {
     /// <summary>
     /// 씬 하나를 책임지는 진입점. 씬에 배치하지 않으며 <see cref="AppFlow"/> 가 단계별로 호출한다.

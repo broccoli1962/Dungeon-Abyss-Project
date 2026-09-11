@@ -1,14 +1,18 @@
-using Backend.Util.Input;
+using DdaIT.Util.Input;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Backend.Object.Character.Player
+namespace DdaIT.Object.Character.Player
 {
     public class PlayerMovementController : MovementController
     {
         [SerializeField] private PlayerState _playerState = PlayerState.Idle;
-        private PlayerInput_Actions _playerInput;
-        private PlayerStatus _playerStatus;
+
+        [Header("Move Setting")]
+        [SerializeField] private float _walkSpeed = 2f;
+        [SerializeField] private float _sprintSpeed = 4f;
+        [SerializeField] private float _rotSpeed = 4f;
+
         private Camera _camera;
         private Vector2 _mousePosition;
 
@@ -16,141 +20,116 @@ namespace Backend.Object.Character.Player
         public Vector3 InputVector { get; private set; }
         public bool IsAiming { get; private set; }
         public bool IsSprinting { get; private set; }
+        public float SpeedRatio { get; private set; }
 
-        protected override void Awake()
+        public void SetCamera(Camera camera) => _camera = camera;
+
+        public void ApplyLocal(in LocalInputSnapShot input, float deltaTime)
         {
-            base.Awake();
-            
-            _playerInput = new PlayerInput_Actions();
-            _playerStatus = GetComponent<PlayerStatus>();
+            InputVector = new Vector3(input.Move.x, 0f, input.Move.y);
+            IsAiming = input.Aim;
+            IsSprinting = input.Sprint;
 
-            if (Camera.main != null)
-            {
-                _camera = Camera.main;
-            }
-        }
-
-        private void OnEnable()
-        {
-            _playerInput.Player.Enable();
-            
-            _playerInput.Player.Move.performed += OnMove;
-            _playerInput.Player.Move.canceled += OnMove;
-
-            _playerInput.Player.Sprint.performed += OnSprint;
-            _playerInput.Player.Sprint.canceled += OnSprint;
-
-            _playerInput.Player.Look.performed += OnLook;
-            _playerInput.Player.Look.canceled += OnLook;
-
-            _playerInput.Player.Aim.performed += OnAim;
-            _playerInput.Player.Aim.canceled += OnAim;
-        }
-
-        private void OnDisable()
-        {
-            _playerInput.Player.Move.performed -= OnMove;
-            _playerInput.Player.Move.canceled -= OnMove;
-
-            _playerInput.Player.Sprint.performed -= OnSprint;
-            _playerInput.Player.Sprint.canceled -= OnSprint;
-
-            _playerInput.Player.Look.performed -= OnLook;
-            _playerInput.Player.Look.canceled -= OnLook;
-
-            _playerInput.Player.Aim.performed -= OnAim;
-            _playerInput.Player.Aim.canceled -= OnAim;
-
-            _playerInput.Player.Disable();
-        }
-
-        private void FixedUpdate()
-        {
             UpdateState();
-            HandleRotation();
-            HandleMovement();
+            HandleRotation(input.LookScreen, deltaTime);
+            HandleMovement(deltaTime);
+        }
+
+        public void ApplyReplicated(Vector3 position, float yaw, bool aiming, float speedRatio)
+        {
+            IsAiming = aiming;
+            SpeedRatio = speedRatio;
+            IsSprinting = speedRatio >= 0.99f;
+            InputVector = speedRatio > 0.001f ? SimulationRotation * Vector3.forward : Vector3.zero;
+            MoveDirection = speedRatio > 0.001f ? SimulationRotation * Vector3.forward : Vector3.zero;
+            _rigidbody.MovePosition(position);
+            _rigidbody.MoveRotation(Quaternion.Euler(0f, yaw, 0f));
         }
 
         private void UpdateState()
         {
-            if(InputVector == Vector3.zero)
+            if (InputVector == Vector3.zero)
             {
                 _playerState = PlayerState.Idle;
+                SpeedRatio = 0f;
                 return;
             }
 
             if (IsAiming)
             {
                 _playerState = PlayerState.Walk;
+                SpeedRatio = 0.5f;
             }
-            else 
+            else
             {
                 _playerState = IsSprinting ? PlayerState.Run : PlayerState.Walk;
+                SpeedRatio = IsSprinting ? 1f : 0.5f;
             }
         }
 
         #region Movement Logic
-        private void HandleRotation()
+        private void HandleRotation(Vector2 lookScreen, float deltaTime)
         {
             if (IsAiming)
             {
-                RotateMouse();
-            }else if (MoveDirection != Vector3.zero)
+                RotateMouse(lookScreen, deltaTime);
+            }
+            else if (MoveDirection != Vector3.zero)
             {
                 Quaternion targetRot = Quaternion.LookRotation(MoveDirection);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, _playerStatus.RotSpeed * Time.deltaTime);
+                _rigidbody.MoveRotation(Quaternion.Slerp(SimulationRotation, targetRot, _rotSpeed * deltaTime));
             }
         }
 
-        private void HandleMovement()
+        private void HandleMovement(float deltaTime)
         {
-            if(_playerState == PlayerState.Idle)
+            if (_playerState == PlayerState.Idle)
             {
                 MoveDirection = Vector3.zero;
                 return;
             }
 
-            //ī�޶� ���� ȸ��
+            //캐릭터 방향 계산
             Vector3 worldDirection;
             if (_camera != null)
             {
                 var camForward = Vector3.ProjectOnPlane(_camera.transform.forward, Vector3.up).normalized;
                 var camRight = Vector3.ProjectOnPlane(_camera.transform.right, Vector3.up).normalized;
-                worldDirection = (camForward * InputVector.y + camRight * InputVector.x).normalized;
+                worldDirection = (camForward * InputVector.z + camRight * InputVector.x).normalized;
             }
             else
             {
-                worldDirection = new Vector3(InputVector.x, 0, InputVector.y).normalized;
+                worldDirection = new Vector3(InputVector.x, 0, InputVector.z).normalized;
             }
 
             MoveDirection = worldDirection;
-        
-            float currentSpeed = (_playerState == PlayerState.Run) ? _playerStatus.SprintSpeed : _playerStatus.WalkSpeed;
-            Vector3 movement = MoveDirection * currentSpeed * Time.deltaTime;
-            _rigidbody.MovePosition(_rigidbody.position + movement);
+            float speed = _playerState == PlayerState.Run ? _sprintSpeed : _walkSpeed;
+            _rigidbody.MovePosition(_rigidbody.position + MoveDirection * speed * deltaTime);
         }
 
-        private void RotateMouse()
+        private void RotateMouse(Vector2 lookScreen, float deltaTime)
         {
-            //���콺 ��ġ�� ȸ��
-            Ray ray = _camera.ScreenPointToRay(_mousePosition);
+            //캐릭터 방향 계산
+            if (_camera == null) return;
 
-            Plane groundPlane = new Plane(Vector3.up, new Vector3(0, transform.position.y, 0));
+            Vector3 origin = SimulationPosition;
 
-            if(groundPlane.Raycast(ray, out float enter))
-            {
-                Vector3 hitPoint = ray.GetPoint(enter);
+            Ray ray = _camera.ScreenPointToRay(lookScreen);
 
-                Vector3 lookTarget = new Vector3(hitPoint.x, transform.position.y, hitPoint.z);
-                Vector3 direction = (lookTarget - transform.position).normalized;
+            Plane groundPlane = new Plane(Vector3.up, new Vector3(0, origin.y, 0));
+            if (!groundPlane.Raycast(ray, out float enter))
+                return;
 
-                if (direction != Vector3.zero)
-                {
-                    Quaternion targetRot = Quaternion.LookRotation(direction);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, _playerStatus.RotSpeed * Time.deltaTime);
-                }
-            }
+            Vector3 hitPoint = ray.GetPoint(enter);
+            
+            Vector3 direction = GetDirection(hitPoint);
+            if(direction.magnitude < 0.0001f)
+                return;
+
+            var targetRot = Quaternion.LookRotation(direction);
+            _rigidbody.MoveRotation(Quaternion.Slerp(SimulationRotation, targetRot, _rotSpeed * deltaTime));
         }
+
         #endregion
 
         #region Input Callbacks

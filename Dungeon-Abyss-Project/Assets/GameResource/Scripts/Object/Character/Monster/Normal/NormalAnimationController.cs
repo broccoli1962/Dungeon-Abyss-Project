@@ -1,4 +1,4 @@
-namespace Backend.Object.Character.Monster.Normal
+namespace DdaIT.Object.Character.Monster.Normal
 {
     public class NormalAnimationController : AnimationController
     {

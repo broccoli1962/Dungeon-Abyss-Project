@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Backend.Util.Management
+namespace DdaIT.Util.Management
 {
     public class SingletonBehavior : MonoBehaviour
     {

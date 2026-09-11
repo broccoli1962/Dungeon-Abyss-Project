@@ -1,9 +1,9 @@
-using Backend.Object.Management;
-using Backend.Util;
+using DdaIT.Object.Management;
+using DdaIT.Util;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-namespace Backend.Object.UI
+namespace DdaIT.Object.UI
 {
     /// <summary>
     /// 모든 UI 의 공통 베이스. View 책임만 가지며, Model 은 추후 Presenter 가 DataManager 로 조회.

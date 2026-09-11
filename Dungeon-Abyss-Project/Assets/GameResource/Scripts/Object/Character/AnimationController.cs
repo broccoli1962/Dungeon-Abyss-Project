@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Backend.Object.Character
+namespace DdaIT.Object.Character
 {
     [RequireComponent(typeof(Animator))]
     public class AnimationController : MonoBehaviour

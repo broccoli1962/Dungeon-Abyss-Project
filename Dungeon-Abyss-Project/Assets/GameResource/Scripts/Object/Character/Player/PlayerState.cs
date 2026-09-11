@@ -1,4 +1,4 @@
-namespace Backend.Object.Character
+namespace DdaIT.Object.Character
 {
     enum PlayerState
     {

@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using DdaIT.AddressableKey;
-using Backend.Object.UI;
-using Backend.Util.Management;
+using DdaIT.Object.UI;
+using DdaIT.Util.Management;
 using Cysharp.Threading.Tasks;
 using R3;
 using UnityEngine;
@@ -10,7 +10,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.Pool;
 using UnityEngine.UI;
 
-namespace Backend.Object.Management
+namespace DdaIT.Object.Management
 {
     /// <summary>
     /// UI 의 생성/오픈/닫기/뒤로가기 스택을 통합 관리한다.

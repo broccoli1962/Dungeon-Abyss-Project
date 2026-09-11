@@ -1,11 +1,10 @@
 using UnityEngine.AI;
 using UnityEngine;
 
-namespace Backend.Object.Character.Monster.Normal
+namespace DdaIT.Object.Character.Monster.Normal
 {
     public class NormalMovementController : MovementController
     {
-        private MonsterStatus _monsterStatus;
         private NavMeshPath _path;
         private int _currentCornerIndex;
         private Vector3 _lastTargetPos;
@@ -13,7 +12,6 @@ namespace Backend.Object.Character.Monster.Normal
         protected override void Awake()
         {
             base.Awake();
-            _monsterStatus = GetComponent<MonsterStatus>();
             _path = new NavMeshPath();
         }
 
@@ -22,7 +20,7 @@ namespace Backend.Object.Character.Monster.Normal
             if(GetDistance(_lastTargetPos, targetPos) > 0.5f)
             {
                 _lastTargetPos = targetPos;
-                if(NavMesh.CalculatePath(transform.position, targetPos, NavMesh.AllAreas, _path))
+                if(NavMesh.CalculatePath(SimulationPosition, targetPos, NavMesh.AllAreas, _path))
                 {
                     _currentCornerIndex = 1;
                 }
@@ -34,7 +32,7 @@ namespace Backend.Object.Character.Monster.Normal
             {
                 Vector3 targetWayPoint = _path.corners[_currentCornerIndex];
                 
-                float distToCorner = Vector3.Distance(new Vector3(transform.position.x, 0, transform.position.z), new Vector3(targetWayPoint.x, 0, targetWayPoint.z));
+                float distToCorner = Vector3.Distance(new Vector3(SimulationPosition.x, 0, SimulationPosition.z), new Vector3(targetWayPoint.x, 0, targetWayPoint.z));
                 if(distToCorner < 0.3f)
                 {
                     _currentCornerIndex++;
@@ -55,7 +53,7 @@ namespace Backend.Object.Character.Monster.Normal
             if(moveDir != Vector3.zero)
             {
                 Quaternion lookRot = Quaternion.LookRotation(moveDir);
-                transform.rotation = Quaternion.Slerp(transform.rotation, lookRot, Time.deltaTime * rotSpeed);
+                _rigidbody.MoveRotation(Quaternion.Slerp(SimulationRotation, lookRot, Time.deltaTime * rotSpeed));
             }
         }
 

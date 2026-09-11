@@ -1,8 +1,8 @@
-using Backend.Util;
+using DdaIT.Util;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-namespace Backend.Object.UI
+namespace DdaIT.Object.UI
 {
     /// <summary>
     /// 단일 패널 내부에서 탭 전환으로 교체되는 View 의 베이스.

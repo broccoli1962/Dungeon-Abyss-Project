@@ -1,6 +1,6 @@
-using Backend.Util.Management;
+using DdaIT.Util.Management;
 
-namespace Backend.Object.Management
+namespace DdaIT.Object.Management
 {
     public partial class TableManager : SingletonGameObject<TableManager>
     {

@@ -1,37 +1,37 @@
-using Backend.Util.Debug;
+using DdaIT.Util.Debug;
 using UnityEngine;
 
-namespace Backend.Object.Character
+namespace DdaIT.Object.Character
 {
     public abstract class CombatController : MonoBehaviour
     {
         [Header("Combat Setting")]
         [SerializeField] protected float _attackRange;
 
-        protected Status _status;
         protected Animator _animator;
-
         protected bool _isAttacking;
+
+        private static readonly int AttackHash = Animator.StringToHash("Attack");
 
         protected virtual void Awake()
         {
-            _status = GetComponent<Status>();
             _animator = GetComponent<Animator>();
         }
 
-        public void OnAttackStart()
-        {
+        public bool TryPlayAttack(){
+            if(_isAttacking) return false;
+
             PerformAttack();
+            return true;
         }
+
+        public void OnAttackStart() => TryPlayAttack();
 
         protected virtual void PerformAttack()
         {
             _isAttacking = true;
-
             if(_animator != null)
-            {
-                _animator.SetTrigger("Attack");
-            }
+                 _animator.SetTrigger(AttackHash);
 
             Debugger.LogProgress("Attacking!");
         }

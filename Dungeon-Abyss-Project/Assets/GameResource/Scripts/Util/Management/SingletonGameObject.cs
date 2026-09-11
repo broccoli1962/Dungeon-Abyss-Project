@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using UnityEngine;
 
-namespace Backend.Util.Management
+namespace DdaIT.Util.Management
 {
     public class SingletonGameObject<T> : SingletonBehavior where T : MonoBehaviour
     {

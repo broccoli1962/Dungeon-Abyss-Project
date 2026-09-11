@@ -1,6 +1,6 @@
-using Backend.Util;
+using DdaIT.Util;
 
-namespace Backend.Object.UI
+namespace DdaIT.Object.UI
 {
     /// <summary>
     /// MVP 패턴의 Presenter 비제네릭 베이스. View 와의 결합을 담당.

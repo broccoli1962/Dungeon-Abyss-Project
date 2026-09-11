@@ -1,4 +1,4 @@
-﻿namespace Backend.Util.Debug
+﻿namespace DdaIT.Util.Debug
 {
     public enum LogType
     {

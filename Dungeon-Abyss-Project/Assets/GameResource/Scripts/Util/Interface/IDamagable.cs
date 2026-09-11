@@ -1,4 +1,4 @@
-namespace Backend.Util.Interface
+namespace DdaIT.Util.Interface
 {
     public interface IDamagable
     {

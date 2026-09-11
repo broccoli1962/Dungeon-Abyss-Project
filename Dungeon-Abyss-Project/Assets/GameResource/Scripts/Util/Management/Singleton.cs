@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Backend.Util.Management
+namespace DdaIT.Util.Management
 {
     public class Singleton<T> where T : class
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Backend.Util.Debug
+namespace DdaIT.Util.Debug
 {
     public static class LogTypeExtension
     {

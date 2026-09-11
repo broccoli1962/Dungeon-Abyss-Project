@@ -1,11 +1,11 @@
 using System;
-using Backend.Object.UI;
+using DdaIT.Object.UI;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace Backend.Object.Management
+namespace DdaIT.Object.Management
 {
     /// <summary>
     /// 빌드 세팅에 등록된 씬 파일명과 1:1 대응한다.
@@ -13,6 +13,7 @@ namespace Backend.Object.Management
     public enum SceneId
     {
         TitleScene,
+        GameScene,
     }
 
     /// <summary>
@@ -62,6 +63,7 @@ namespace Backend.Object.Management
             try
             {
                 var splash = await UIManager.OpenAsync<SplashPanel>();
+                await UniTask.NextFrame();
                 UnityEngine.Object.Destroy(bootCurtain);
 
                 var minShow = UniTask.Delay(TimeSpan.FromSeconds(SplashMinDuration));
@@ -86,6 +88,7 @@ namespace Backend.Object.Management
 
                 await minShow;
                 await splash.FadeOutAsync();
+                await UniTask.NextFrame();
                 UIManager.Close(splash);
             }
             catch (Exception e)

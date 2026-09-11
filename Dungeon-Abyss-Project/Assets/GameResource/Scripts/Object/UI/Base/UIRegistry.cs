@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Backend.Object.UI
+namespace DdaIT.Object.UI
 {
     /// <summary>
     /// UI 가 배치될 Canvas 레이어를 관리한다.

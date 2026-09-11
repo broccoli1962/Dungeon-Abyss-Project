@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using DdaIT.AddressableKey;
-using Backend.Util.Management;
+using DdaIT.Util.Management;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 
-namespace Backend.Object.Management
+namespace DdaIT.Object.Management
 {
     public class AudioManager : SingletonGameObject<AudioManager>
     {

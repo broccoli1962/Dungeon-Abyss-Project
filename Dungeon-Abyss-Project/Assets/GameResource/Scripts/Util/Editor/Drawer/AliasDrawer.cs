@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using Backend.Util.Attribute;
-using Backend.Util.Debug;
+using DdaIT.Util.Attribute;
+using DdaIT.Util.Debug;
 
-namespace Backend.Util.Editor.Drawer
+namespace DdaIT.Util.Editor.Drawer
 {
     [CustomPropertyDrawer(typeof(AliasAttribute), true)]
     public class AliasDrawer : PropertyDrawer

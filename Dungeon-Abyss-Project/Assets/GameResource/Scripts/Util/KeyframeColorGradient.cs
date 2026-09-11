@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Backend.Util
+namespace DdaIT.Util
 {
     [Serializable]
     public class KeyframeColorGradient

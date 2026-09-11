@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Backend.Object.UI
+namespace DdaIT.Object.UI
 {
     /// <summary>
     /// 씬 전환용 풀스크린 로딩 커튼. System 레이어에 올라가며 뒤로가기로 닫히지 않는다.
