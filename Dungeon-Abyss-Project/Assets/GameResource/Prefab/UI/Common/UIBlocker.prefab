@@ -87,7 +87,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f6d8764c06cfbfe42956199d6e0ca21b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Backend.Object.UI.CommonButton
+  m_EditorClassIdentifier: Assembly-CSharp::DdaIT.Object.UI.CommonButton
   interactable: 1
   useAnimation: 0
   useSound: 0

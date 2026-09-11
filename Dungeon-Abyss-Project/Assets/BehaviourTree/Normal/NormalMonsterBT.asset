@@ -63,7 +63,7 @@ MonoBehaviour:
         m_IsShared: 0
         m_Value: []
     - rid: 9016977771829919889
-      type: {class: 'TypedVariableModel`1[[Backend.Object.Character.Monster.MonsterStatus, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      type: {class: 'TypedVariableModel`1[[DdaIT.Object.Character.Monster.MonsterStatus, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:
         ID:
           m_Value0: 16258994407241459231
@@ -73,7 +73,7 @@ MonoBehaviour:
         m_IsShared: 0
         m_Value: {fileID: 0}
     - rid: 9016977814382444741
-      type: {class: 'TypedVariableModel`1[[Backend.Object.Character.Monster.MonsterDetectController, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      type: {class: 'TypedVariableModel`1[[DdaIT.Object.Character.Monster.MonsterDetectController, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:
         ID:
           m_Value0: 936417723677326087
@@ -93,7 +93,7 @@ MonoBehaviour:
         m_IsShared: 0
         m_Value: 0
     - rid: 9016977815657250845
-      type: {class: 'TypedVariableModel`1[[Backend.Object.Character.Monster.Normal.NormalMovementController, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      type: {class: 'TypedVariableModel`1[[DdaIT.Object.Character.Monster.Normal.NormalMovementController, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:
         ID:
           m_Value0: 12833020967612333510
@@ -139,7 +139,7 @@ MonoBehaviour:
   - rid: 9016977861147362004
   - rid: 9016977915484307703
   - rid: 8010651475173441650
-  m_VersionTimestamp: 639238776312109623
+  m_VersionTimestamp: 639240553265930920
   m_SerializedVersion: 3
   m_DebugInfo: {fileID: -4799443612248615529}
   m_RuntimeGraph: {fileID: 2353655663692914335}
@@ -181,7 +181,7 @@ MonoBehaviour:
     Variables:
     - Name: TargetDetector
       Type:
-        m_SerializableType: Backend.Object.Character.Monster.MonsterDetectController,
+        m_SerializableType: DdaIT.Object.Character.Monster.MonsterDetectController,
           Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       Tooltip: 
     - Name: TargetDetected
@@ -226,7 +226,7 @@ MonoBehaviour:
       Tooltip: 
     - Name: MovementController
       Type:
-        m_SerializableType: Backend.Object.Character.Monster.Normal.NormalMovementController,
+        m_SerializableType: DdaIT.Object.Character.Monster.Normal.NormalMovementController,
           Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       Tooltip: 
     - Name: PatrolPoints
@@ -237,7 +237,7 @@ MonoBehaviour:
       Tooltip: 
     - Name: MonsterStatus
       Type:
-        m_SerializableType: Backend.Object.Character.Monster.MonsterStatus, Assembly-CSharp,
+        m_SerializableType: DdaIT.Object.Character.Monster.MonsterStatus, Assembly-CSharp,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       Tooltip: 
     - Name: AnimatorSpeedParam
@@ -274,17 +274,17 @@ MonoBehaviour:
       Tooltip: 
     - Name: NttDetector
       Type:
-        m_SerializableType: Backend.Object.Character.Monster.MonsterDetectController,
+        m_SerializableType: DdaIT.Object.Character.Monster.MonsterDetectController,
           Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       Tooltip: 
     - Name: NttStatus
       Type:
-        m_SerializableType: Backend.Object.Character.Monster.MonsterStatus, Assembly-CSharp,
+        m_SerializableType: DdaIT.Object.Character.Monster.MonsterStatus, Assembly-CSharp,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       Tooltip: 
     - Name: MovementController
       Type:
-        m_SerializableType: Backend.Object.Character.Monster.Normal.NormalMovementController,
+        m_SerializableType: DdaIT.Object.Character.Monster.Normal.NormalMovementController,
           Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       Tooltip: 
     NamedChildren: []
@@ -344,17 +344,17 @@ MonoBehaviour:
       Tooltip: 
     - Name: Target
       Type:
-        m_SerializableType: Backend.Object.Character.Monster.MonsterDetectController,
+        m_SerializableType: DdaIT.Object.Character.Monster.MonsterDetectController,
           Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       Tooltip: 
     - Name: NttStatus
       Type:
-        m_SerializableType: Backend.Object.Character.Monster.MonsterStatus, Assembly-CSharp,
+        m_SerializableType: DdaIT.Object.Character.Monster.MonsterStatus, Assembly-CSharp,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       Tooltip: 
     - Name: NttMovement
       Type:
-        m_SerializableType: Backend.Object.Character.Monster.Normal.NormalMovementController,
+        m_SerializableType: DdaIT.Object.Character.Monster.Normal.NormalMovementController,
           Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       Tooltip: 
     NamedChildren: []
@@ -404,7 +404,7 @@ MonoBehaviour:
     Variables:
     - Name: NttDetector
       Type:
-        m_SerializableType: Backend.Object.Character.Monster.MonsterDetectController,
+        m_SerializableType: DdaIT.Object.Character.Monster.MonsterDetectController,
           Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       Tooltip: 
     - Name: Self
@@ -473,7 +473,7 @@ MonoBehaviour:
       data:
         FieldName: NttDetector
         Type:
-          m_SerializableType: Backend.Object.Character.Monster.MonsterDetectController,
+          m_SerializableType: DdaIT.Object.Character.Monster.MonsterDetectController,
             Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
         LocalValue:
           rid: 8010651475173441655
@@ -491,7 +491,7 @@ MonoBehaviour:
         LinkedVariable:
           rid: 8010651475173441657
     - rid: 8010651475173441655
-      type: {class: 'BlackboardVariable`1[[Backend.Object.Character.Monster.MonsterDetectController, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      type: {class: 'BlackboardVariable`1[[DdaIT.Object.Character.Monster.MonsterDetectController, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 0
@@ -517,7 +517,7 @@ MonoBehaviour:
         m_IsShared: 0
         m_Value: {fileID: 0}
     - rid: 8010651475173441696
-      type: {class: 'TypedVariableModel`1[[Backend.Object.Character.Monster.MonsterDetectController, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      type: {class: 'TypedVariableModel`1[[DdaIT.Object.Character.Monster.MonsterDetectController, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:
         ID:
           m_Value0: 936417723677326087
@@ -639,14 +639,14 @@ MonoBehaviour:
       data:
         FieldName: TargetDetector
         Type:
-          m_SerializableType: Backend.Object.Character.Monster.MonsterDetectController,
+          m_SerializableType: DdaIT.Object.Character.Monster.MonsterDetectController,
             Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
         LocalValue:
           rid: 9016977814382444829
         LinkedVariable:
           rid: 9016977814382444832
     - rid: 9016977814382444829
-      type: {class: 'BlackboardVariable`1[[Backend.Object.Character.Monster.MonsterDetectController, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      type: {class: 'BlackboardVariable`1[[DdaIT.Object.Character.Monster.MonsterDetectController, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 0
@@ -654,7 +654,7 @@ MonoBehaviour:
         Name: 
         m_Value: {fileID: 0}
     - rid: 9016977814382444832
-      type: {class: 'TypedVariableModel`1[[Backend.Object.Character.Monster.MonsterDetectController, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      type: {class: 'TypedVariableModel`1[[DdaIT.Object.Character.Monster.MonsterDetectController, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:
         ID:
           m_Value0: 936417723677326087
@@ -929,7 +929,7 @@ MonoBehaviour:
       data:
         FieldName: MonsterStatus
         Type:
-          m_SerializableType: Backend.Object.Character.Monster.MonsterStatus, Assembly-CSharp,
+          m_SerializableType: DdaIT.Object.Character.Monster.MonsterStatus, Assembly-CSharp,
             Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
         LocalValue:
           rid: 9016977814382445173
@@ -973,7 +973,7 @@ MonoBehaviour:
         Name: 
         m_Value: []
     - rid: 9016977814382445173
-      type: {class: 'BlackboardVariable`1[[Backend.Object.Character.Monster.MonsterStatus, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      type: {class: 'BlackboardVariable`1[[DdaIT.Object.Character.Monster.MonsterStatus, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 0
@@ -999,7 +999,7 @@ MonoBehaviour:
         m_IsShared: 0
         m_Value: []
     - rid: 9016977814382445203
-      type: {class: 'TypedVariableModel`1[[Backend.Object.Character.Monster.MonsterStatus, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      type: {class: 'TypedVariableModel`1[[DdaIT.Object.Character.Monster.MonsterStatus, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:
         ID:
           m_Value0: 16258994407241459231
@@ -1271,7 +1271,7 @@ MonoBehaviour:
       data:
         FieldName: NttDetector
         Type:
-          m_SerializableType: Backend.Object.Character.Monster.MonsterDetectController,
+          m_SerializableType: DdaIT.Object.Character.Monster.MonsterDetectController,
             Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
         LocalValue:
           rid: 9016977814382445559
@@ -1282,7 +1282,7 @@ MonoBehaviour:
       data:
         FieldName: NttStatus
         Type:
-          m_SerializableType: Backend.Object.Character.Monster.MonsterStatus, Assembly-CSharp,
+          m_SerializableType: DdaIT.Object.Character.Monster.MonsterStatus, Assembly-CSharp,
             Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
         LocalValue:
           rid: 9016977814382445560
@@ -1293,7 +1293,7 @@ MonoBehaviour:
       data:
         FieldName: MovementController
         Type:
-          m_SerializableType: Backend.Object.Character.Monster.Normal.NormalMovementController,
+          m_SerializableType: DdaIT.Object.Character.Monster.Normal.NormalMovementController,
             Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
         LocalValue:
           rid: 9016977814382445561
@@ -1318,7 +1318,7 @@ MonoBehaviour:
         m_IsShared: 0
         m_Value: {fileID: 0}
     - rid: 9016977814382445559
-      type: {class: 'BlackboardVariable`1[[Backend.Object.Character.Monster.MonsterDetectController, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      type: {class: 'BlackboardVariable`1[[DdaIT.Object.Character.Monster.MonsterDetectController, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 0
@@ -1326,7 +1326,7 @@ MonoBehaviour:
         Name: 
         m_Value: {fileID: 0}
     - rid: 9016977814382445560
-      type: {class: 'BlackboardVariable`1[[Backend.Object.Character.Monster.MonsterStatus, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      type: {class: 'BlackboardVariable`1[[DdaIT.Object.Character.Monster.MonsterStatus, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 0
@@ -1334,7 +1334,7 @@ MonoBehaviour:
         Name: 
         m_Value: {fileID: 0}
     - rid: 9016977814382445561
-      type: {class: 'BlackboardVariable`1[[Backend.Object.Character.Monster.Normal.NormalMovementController, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      type: {class: 'BlackboardVariable`1[[DdaIT.Object.Character.Monster.Normal.NormalMovementController, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 0
@@ -1342,7 +1342,7 @@ MonoBehaviour:
         Name: 
         m_Value: {fileID: 0}
     - rid: 9016977815657250821
-      type: {class: 'TypedVariableModel`1[[Backend.Object.Character.Monster.MonsterDetectController, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      type: {class: 'TypedVariableModel`1[[DdaIT.Object.Character.Monster.MonsterDetectController, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:
         ID:
           m_Value0: 936417723677326087
@@ -1352,7 +1352,7 @@ MonoBehaviour:
         m_IsShared: 0
         m_Value: {fileID: 0}
     - rid: 9016977815657250833
-      type: {class: 'TypedVariableModel`1[[Backend.Object.Character.Monster.MonsterStatus, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      type: {class: 'TypedVariableModel`1[[DdaIT.Object.Character.Monster.MonsterStatus, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:
         ID:
           m_Value0: 16258994407241459231
@@ -1362,7 +1362,7 @@ MonoBehaviour:
         m_IsShared: 0
         m_Value: {fileID: 0}
     - rid: 9016977815657250881
-      type: {class: 'TypedVariableModel`1[[Backend.Object.Character.Monster.Normal.NormalMovementController, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      type: {class: 'TypedVariableModel`1[[DdaIT.Object.Character.Monster.Normal.NormalMovementController, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:
         ID:
           m_Value0: 12833020967612333510
@@ -1517,14 +1517,14 @@ MonoBehaviour:
       data:
         FieldName: MovementController
         Type:
-          m_SerializableType: Backend.Object.Character.Monster.Normal.NormalMovementController,
+          m_SerializableType: DdaIT.Object.Character.Monster.Normal.NormalMovementController,
             Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
         LocalValue:
           rid: 9016977815657251139
         LinkedVariable:
           rid: 9016977815657251140
     - rid: 9016977815657251139
-      type: {class: 'BlackboardVariable`1[[Backend.Object.Character.Monster.Normal.NormalMovementController, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      type: {class: 'BlackboardVariable`1[[DdaIT.Object.Character.Monster.Normal.NormalMovementController, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 0
@@ -1532,7 +1532,7 @@ MonoBehaviour:
         Name: 
         m_Value: {fileID: 0}
     - rid: 9016977815657251140
-      type: {class: 'TypedVariableModel`1[[Backend.Object.Character.Monster.Normal.NormalMovementController, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      type: {class: 'TypedVariableModel`1[[DdaIT.Object.Character.Monster.Normal.NormalMovementController, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:
         ID:
           m_Value0: 12833020967612333510
@@ -1678,7 +1678,7 @@ MonoBehaviour:
       data:
         FieldName: Target
         Type:
-          m_SerializableType: Backend.Object.Character.Monster.MonsterDetectController,
+          m_SerializableType: DdaIT.Object.Character.Monster.MonsterDetectController,
             Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
         LocalValue:
           rid: 9016977861147361361
@@ -1689,14 +1689,14 @@ MonoBehaviour:
       data:
         FieldName: NttStatus
         Type:
-          m_SerializableType: Backend.Object.Character.Monster.MonsterStatus, Assembly-CSharp,
+          m_SerializableType: DdaIT.Object.Character.Monster.MonsterStatus, Assembly-CSharp,
             Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
         LocalValue:
           rid: 9016977861147361362
         LinkedVariable:
           rid: 9016977861147361418
     - rid: 9016977861147361361
-      type: {class: 'BlackboardVariable`1[[Backend.Object.Character.Monster.MonsterDetectController, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      type: {class: 'BlackboardVariable`1[[DdaIT.Object.Character.Monster.MonsterDetectController, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 0
@@ -1704,7 +1704,7 @@ MonoBehaviour:
         Name: 
         m_Value: {fileID: 0}
     - rid: 9016977861147361362
-      type: {class: 'BlackboardVariable`1[[Backend.Object.Character.Monster.MonsterStatus, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      type: {class: 'BlackboardVariable`1[[DdaIT.Object.Character.Monster.MonsterStatus, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 0
@@ -1716,14 +1716,14 @@ MonoBehaviour:
       data:
         FieldName: NttMovement
         Type:
-          m_SerializableType: Backend.Object.Character.Monster.Normal.NormalMovementController,
+          m_SerializableType: DdaIT.Object.Character.Monster.Normal.NormalMovementController,
             Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
         LocalValue:
           rid: 9016977861147361386
         LinkedVariable:
           rid: -2
     - rid: 9016977861147361386
-      type: {class: 'BlackboardVariable`1[[Backend.Object.Character.Monster.Normal.NormalMovementController, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      type: {class: 'BlackboardVariable`1[[DdaIT.Object.Character.Monster.Normal.NormalMovementController, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 0
@@ -1760,7 +1760,7 @@ MonoBehaviour:
         m_IsShared: 0
         m_Value: {fileID: 0}
     - rid: 9016977861147361418
-      type: {class: 'TypedVariableModel`1[[Backend.Object.Character.Monster.MonsterStatus, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      type: {class: 'TypedVariableModel`1[[DdaIT.Object.Character.Monster.MonsterStatus, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:
         ID:
           m_Value0: 16258994407241459231
@@ -1770,7 +1770,7 @@ MonoBehaviour:
         m_IsShared: 0
         m_Value: {fileID: 0}
     - rid: 9016977861147361447
-      type: {class: 'TypedVariableModel`1[[Backend.Object.Character.Monster.MonsterDetectController, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      type: {class: 'TypedVariableModel`1[[DdaIT.Object.Character.Monster.MonsterDetectController, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:
         ID:
           m_Value0: 936417723677326087
@@ -2184,7 +2184,7 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 5974050224304029920
+    - rid: 5974050267958607956
       type: {class: Start, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         ID:
@@ -2195,10 +2195,10 @@ MonoBehaviour:
         m_Parent:
           rid: -2
         m_Child:
-          rid: 5974050224304029921
+          rid: 5974050267958607957
         Repeat: 0
         AllowMultipleRepeatsPerTick: 0
-    - rid: 5974050224304029921
+    - rid: 5974050267958607957
       type: {class: ParallelAllComposite, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         ID:
@@ -2207,12 +2207,12 @@ MonoBehaviour:
         Graph:
           rid: 9016977407518441475
         m_Parent:
-          rid: 5974050224304029920
+          rid: 5974050267958607956
         m_Children:
-        - rid: 5974050224304029922
-        - rid: 5974050224304029923
+        - rid: 5974050267958607958
+        - rid: 5974050267958607959
         m_RegisteredObservers: []
-    - rid: 5974050224304029922
+    - rid: 5974050267958607958
       type: {class: RepeaterModifier, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         ID:
@@ -2221,11 +2221,11 @@ MonoBehaviour:
         Graph:
           rid: 9016977407518441475
         m_Parent:
-          rid: 5974050224304029921
+          rid: 5974050267958607957
         m_Child:
-          rid: 5974050224304029924
+          rid: 5974050267958607960
         m_AllowMultipleRepeatsPerTick: 0
-    - rid: 5974050224304029923
+    - rid: 5974050267958607959
       type: {class: RepeaterModifier, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         ID:
@@ -2234,11 +2234,11 @@ MonoBehaviour:
         Graph:
           rid: 9016977407518441475
         m_Parent:
-          rid: 5974050224304029921
+          rid: 5974050267958607957
         m_Child:
-          rid: 5974050224304029925
+          rid: 5974050267958607961
         m_AllowMultipleRepeatsPerTick: 0
-    - rid: 5974050224304029924
+    - rid: 5974050267958607960
       type: {class: CheckDetectorAction, ns: , asm: Assembly-CSharp}
       data:
         ID:
@@ -2247,12 +2247,12 @@ MonoBehaviour:
         Graph:
           rid: 9016977407518441475
         m_Parent:
-          rid: 5974050224304029922
+          rid: 5974050267958607958
         TargetDetector:
           rid: 8010651475173441702
         TargetDetected:
           rid: 8010651475173441704
-    - rid: 5974050224304029925
+    - rid: 5974050267958607961
       type: {class: RestartModifier, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         ID:
@@ -2261,14 +2261,14 @@ MonoBehaviour:
         Graph:
           rid: 9016977407518441475
         m_Parent:
-          rid: 5974050224304029923
+          rid: 5974050267958607959
         m_Child:
-          rid: 5974050224304029926
+          rid: 5974050267958607962
         m_Conditions:
-        - rid: 5974050224304029927
+        - rid: 5974050267958607963
         m_RequiresAllConditions: 0
         m_ObserverType: 0
-    - rid: 5974050224304029926
+    - rid: 5974050267958607962
       type: {class: BranchingConditionComposite, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         ID:
@@ -2277,29 +2277,29 @@ MonoBehaviour:
         Graph:
           rid: 9016977407518441475
         m_Parent:
-          rid: 5974050224304029925
+          rid: 5974050267958607961
         m_Children:
-        - rid: 5974050224304029928
-        - rid: 5974050224304029929
+        - rid: 5974050267958607964
+        - rid: 5974050267958607965
         m_RegisteredObservers: []
         m_Conditions:
-        - rid: 5974050224304029930
+        - rid: 5974050267958607966
         m_RequiresAllConditions: 0
         True:
-          rid: 5974050224304029928
+          rid: 5974050267958607964
         False:
-          rid: 5974050224304029929
+          rid: 5974050267958607965
         m_CurrentChild:
           rid: -2
         m_ObserverType: 0
-    - rid: 5974050224304029927
+    - rid: 5974050267958607963
       type: {class: VariableValueChangedCondition, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         Graph:
           rid: 9016977407518441475
         Variable:
           rid: 8010651475173441704
-    - rid: 5974050224304029928
+    - rid: 5974050267958607964
       type: {class: SelectorComposite, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         ID:
@@ -2308,12 +2308,12 @@ MonoBehaviour:
         Graph:
           rid: 9016977407518441475
         m_Parent:
-          rid: 5974050224304029926
+          rid: 5974050267958607962
         m_Children:
-        - rid: 5974050224304029931
-        - rid: 5974050224304029932
+        - rid: 5974050267958607967
+        - rid: 5974050267958607968
         m_RegisteredObservers: []
-    - rid: 5974050224304029929
+    - rid: 5974050267958607965
       type: {class: SequenceComposite, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         ID:
@@ -2322,13 +2322,13 @@ MonoBehaviour:
         Graph:
           rid: 9016977407518441475
         m_Parent:
-          rid: 5974050224304029926
+          rid: 5974050267958607962
         m_Children:
-        - rid: 5974050224304029933
-        - rid: 5974050224304029934
-        - rid: 5974050224304029935
+        - rid: 5974050267958607969
+        - rid: 5974050267958607970
+        - rid: 5974050267958607971
         m_RegisteredObservers: []
-    - rid: 5974050224304029930
+    - rid: 5974050267958607966
       type: {class: VariableComparisonCondition, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         Graph:
@@ -2336,10 +2336,10 @@ MonoBehaviour:
         Variable:
           rid: 8010651475173441704
         Operator:
-          rid: 5974050224304029936
+          rid: 5974050267958607972
         ComparisonValue:
-          rid: 5974050224304029937
-    - rid: 5974050224304029931
+          rid: 5974050267958607973
+    - rid: 5974050267958607967
       type: {class: SequenceComposite, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         ID:
@@ -2348,13 +2348,13 @@ MonoBehaviour:
         Graph:
           rid: 9016977407518441475
         m_Parent:
-          rid: 5974050224304029928
+          rid: 5974050267958607964
         m_Children:
-        - rid: 5974050224304029938
-        - rid: 5974050224304029939
-        - rid: 5974050224304029940
+        - rid: 5974050267958607974
+        - rid: 5974050267958607975
+        - rid: 5974050267958607976
         m_RegisteredObservers: []
-    - rid: 5974050224304029932
+    - rid: 5974050267958607968
       type: {class: SequenceComposite, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         ID:
@@ -2363,13 +2363,13 @@ MonoBehaviour:
         Graph:
           rid: 9016977407518441475
         m_Parent:
-          rid: 5974050224304029928
+          rid: 5974050267958607964
         m_Children:
-        - rid: 5974050224304029941
-        - rid: 5974050224304029942
-        - rid: 5974050224304029943
+        - rid: 5974050267958607977
+        - rid: 5974050267958607978
+        - rid: 5974050267958607979
         m_RegisteredObservers: []
-    - rid: 5974050224304029933
+    - rid: 5974050267958607969
       type: {class: SetAnimatorBoolAction, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         ID:
@@ -2378,14 +2378,14 @@ MonoBehaviour:
         Graph:
           rid: 9016977407518441475
         m_Parent:
-          rid: 5974050224304029929
+          rid: 5974050267958607965
         Parameter:
-          rid: 5974050224304029944
+          rid: 5974050267958607980
         Animator:
-          rid: 5974050224304029945
+          rid: 5974050267958607981
         Value:
-          rid: 5974050224304029946
-    - rid: 5974050224304029934
+          rid: 5974050267958607982
+    - rid: 5974050267958607970
       type: {class: WaitAction, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         ID:
@@ -2394,10 +2394,10 @@ MonoBehaviour:
         Graph:
           rid: 9016977407518441475
         m_Parent:
-          rid: 5974050224304029929
+          rid: 5974050267958607965
         SecondsToWait:
-          rid: 5974050224304029947
-    - rid: 5974050224304029935
+          rid: 5974050267958607983
+    - rid: 5974050267958607971
       type: {class: MonsterPatrolAction, ns: , asm: Assembly-CSharp}
       data:
         ID:
@@ -2406,7 +2406,7 @@ MonoBehaviour:
         Graph:
           rid: 9016977407518441475
         m_Parent:
-          rid: 5974050224304029929
+          rid: 5974050267958607965
         Self:
           rid: 8010651475173441699
         MovementController:
@@ -2416,8 +2416,8 @@ MonoBehaviour:
         MonsterStatus:
           rid: 8010651475173441701
         AnimatorSpeedParam:
-          rid: 5974050224304029948
-    - rid: 5974050224304029936
+          rid: 5974050267958607984
+    - rid: 5974050267958607972
       type: {class: 'BlackboardVariable`1[[Unity.Behavior.ConditionOperator, Unity.Behavior]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
@@ -2425,7 +2425,7 @@ MonoBehaviour:
           m_Value1: 0
         Name: 
         m_Value: 0
-    - rid: 5974050224304029937
+    - rid: 5974050267958607973
       type: {class: 'BlackboardVariable`1[[System.Boolean, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
@@ -2433,7 +2433,7 @@ MonoBehaviour:
           m_Value1: 0
         Name: 
         m_Value: 1
-    - rid: 5974050224304029938
+    - rid: 5974050267958607974
       type: {class: CheckDistanceTargetAction, ns: , asm: Assembly-CSharp}
       data:
         ID:
@@ -2442,7 +2442,7 @@ MonoBehaviour:
         Graph:
           rid: 9016977407518441475
         m_Parent:
-          rid: 5974050224304029931
+          rid: 5974050267958607967
         Self:
           rid: 8010651475173441699
         Target:
@@ -2450,8 +2450,8 @@ MonoBehaviour:
         NttStatus:
           rid: 8010651475173441701
         NttMovement:
-          rid: 5974050224304029949
-    - rid: 5974050224304029939
+          rid: 5974050267958607985
+    - rid: 5974050267958607975
       type: {class: CheckFrontTargetAction, ns: , asm: Assembly-CSharp}
       data:
         ID:
@@ -2460,12 +2460,12 @@ MonoBehaviour:
         Graph:
           rid: 9016977407518441475
         m_Parent:
-          rid: 5974050224304029931
+          rid: 5974050267958607967
         NttDetector:
           rid: 8010651475173441702
         Self:
           rid: 8010651475173441699
-    - rid: 5974050224304029940
+    - rid: 5974050267958607976
       type: {class: SetAnimatorBoolAction, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         ID:
@@ -2474,14 +2474,14 @@ MonoBehaviour:
         Graph:
           rid: 9016977407518441475
         m_Parent:
-          rid: 5974050224304029931
+          rid: 5974050267958607967
         Parameter:
-          rid: 5974050224304029950
+          rid: 5974050267958607986
         Animator:
-          rid: 5974050224304029951
+          rid: 5974050267958607987
         Value:
-          rid: 5974050224304029952
-    - rid: 5974050224304029941
+          rid: 5974050267958607988
+    - rid: 5974050267958607977
       type: {class: SetAnimatorBoolAction, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         ID:
@@ -2490,14 +2490,14 @@ MonoBehaviour:
         Graph:
           rid: 9016977407518441475
         m_Parent:
-          rid: 5974050224304029932
+          rid: 5974050267958607968
         Parameter:
-          rid: 5974050224304029953
+          rid: 5974050267958607989
         Animator:
-          rid: 5974050224304029954
+          rid: 5974050267958607990
         Value:
-          rid: 5974050224304029955
-    - rid: 5974050224304029942
+          rid: 5974050267958607991
+    - rid: 5974050267958607978
       type: {class: SetAnimatorFloatAction, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         ID:
@@ -2506,14 +2506,14 @@ MonoBehaviour:
         Graph:
           rid: 9016977407518441475
         m_Parent:
-          rid: 5974050224304029932
+          rid: 5974050267958607968
         Parameter:
-          rid: 5974050224304029956
+          rid: 5974050267958607992
         Animator:
-          rid: 5974050224304029957
+          rid: 5974050267958607993
         Value:
-          rid: 5974050224304029958
-    - rid: 5974050224304029943
+          rid: 5974050267958607994
+    - rid: 5974050267958607979
       type: {class: ChaseTargetAction, ns: , asm: Assembly-CSharp}
       data:
         ID:
@@ -2522,7 +2522,7 @@ MonoBehaviour:
         Graph:
           rid: 9016977407518441475
         m_Parent:
-          rid: 5974050224304029932
+          rid: 5974050267958607968
         Self:
           rid: 8010651475173441699
         NttDetector:
@@ -2531,7 +2531,7 @@ MonoBehaviour:
           rid: 8010651475173441701
         MovementController:
           rid: 8010651475173441703
-    - rid: 5974050224304029944
+    - rid: 5974050267958607980
       type: {class: 'BlackboardVariable`1[[System.String, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
@@ -2539,7 +2539,7 @@ MonoBehaviour:
           m_Value1: 0
         Name: 
         m_Value: IsAttacking
-    - rid: 5974050224304029945
+    - rid: 5974050267958607981
       type: {class: 'GameObjectToComponentBlackboardVariable`1[[UnityEngine.Animator, UnityEngine.AnimationModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
@@ -2549,7 +2549,7 @@ MonoBehaviour:
         m_Value: {fileID: 0}
         m_LinkedVariable:
           rid: 8010651475173441699
-    - rid: 5974050224304029946
+    - rid: 5974050267958607982
       type: {class: 'BlackboardVariable`1[[System.Boolean, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
@@ -2557,7 +2557,7 @@ MonoBehaviour:
           m_Value1: 0
         Name: 
         m_Value: 0
-    - rid: 5974050224304029947
+    - rid: 5974050267958607983
       type: {class: 'BlackboardVariable`1[[System.Single, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
@@ -2565,7 +2565,7 @@ MonoBehaviour:
           m_Value1: 0
         Name: 
         m_Value: 1
-    - rid: 5974050224304029948
+    - rid: 5974050267958607984
       type: {class: 'BlackboardVariable`1[[System.String, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
@@ -2573,15 +2573,15 @@ MonoBehaviour:
           m_Value1: 0
         Name: 
         m_Value: Speed
-    - rid: 5974050224304029949
-      type: {class: 'BlackboardVariable`1[[Backend.Object.Character.Monster.Normal.NormalMovementController, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+    - rid: 5974050267958607985
+      type: {class: 'BlackboardVariable`1[[DdaIT.Object.Character.Monster.Normal.NormalMovementController, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 0
           m_Value1: 0
         Name: 
         m_Value: {fileID: 0}
-    - rid: 5974050224304029950
+    - rid: 5974050267958607986
       type: {class: 'BlackboardVariable`1[[System.String, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
@@ -2589,7 +2589,7 @@ MonoBehaviour:
           m_Value1: 0
         Name: 
         m_Value: IsAttacking
-    - rid: 5974050224304029951
+    - rid: 5974050267958607987
       type: {class: 'GameObjectToComponentBlackboardVariable`1[[UnityEngine.Animator, UnityEngine.AnimationModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
@@ -2599,7 +2599,7 @@ MonoBehaviour:
         m_Value: {fileID: 0}
         m_LinkedVariable:
           rid: 8010651475173441699
-    - rid: 5974050224304029952
+    - rid: 5974050267958607988
       type: {class: 'BlackboardVariable`1[[System.Boolean, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
@@ -2607,7 +2607,7 @@ MonoBehaviour:
           m_Value1: 0
         Name: 
         m_Value: 1
-    - rid: 5974050224304029953
+    - rid: 5974050267958607989
       type: {class: 'BlackboardVariable`1[[System.String, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
@@ -2615,7 +2615,7 @@ MonoBehaviour:
           m_Value1: 0
         Name: 
         m_Value: IsAttacking
-    - rid: 5974050224304029954
+    - rid: 5974050267958607990
       type: {class: 'GameObjectToComponentBlackboardVariable`1[[UnityEngine.Animator, UnityEngine.AnimationModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
@@ -2625,7 +2625,7 @@ MonoBehaviour:
         m_Value: {fileID: 0}
         m_LinkedVariable:
           rid: 8010651475173441699
-    - rid: 5974050224304029955
+    - rid: 5974050267958607991
       type: {class: 'BlackboardVariable`1[[System.Boolean, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
@@ -2633,7 +2633,7 @@ MonoBehaviour:
           m_Value1: 0
         Name: 
         m_Value: 0
-    - rid: 5974050224304029956
+    - rid: 5974050267958607992
       type: {class: 'BlackboardVariable`1[[System.String, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
@@ -2641,7 +2641,7 @@ MonoBehaviour:
           m_Value1: 0
         Name: 
         m_Value: Speed
-    - rid: 5974050224304029957
+    - rid: 5974050267958607993
       type: {class: 'GameObjectToComponentBlackboardVariable`1[[UnityEngine.Animator, UnityEngine.AnimationModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
@@ -2651,7 +2651,7 @@ MonoBehaviour:
         m_Value: {fileID: 0}
         m_LinkedVariable:
           rid: 8010651475173441699
-    - rid: 5974050224304029958
+    - rid: 5974050267958607994
       type: {class: 'BlackboardVariable`1[[System.Single, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
@@ -2676,7 +2676,7 @@ MonoBehaviour:
         Name: PatrolPoints
         m_Value: []
     - rid: 8010651475173441701
-      type: {class: 'BlackboardVariable`1[[Backend.Object.Character.Monster.MonsterStatus, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      type: {class: 'BlackboardVariable`1[[DdaIT.Object.Character.Monster.MonsterStatus, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 16258994407241459231
@@ -2684,7 +2684,7 @@ MonoBehaviour:
         Name: NttStatus
         m_Value: {fileID: 0}
     - rid: 8010651475173441702
-      type: {class: 'BlackboardVariable`1[[Backend.Object.Character.Monster.MonsterDetectController, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      type: {class: 'BlackboardVariable`1[[DdaIT.Object.Character.Monster.MonsterDetectController, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 936417723677326087
@@ -2692,7 +2692,7 @@ MonoBehaviour:
         Name: NttDetector
         m_Value: {fileID: 0}
     - rid: 8010651475173441703
-      type: {class: 'BlackboardVariable`1[[Backend.Object.Character.Monster.Normal.NormalMovementController, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      type: {class: 'BlackboardVariable`1[[DdaIT.Object.Character.Monster.Normal.NormalMovementController, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 12833020967612333510
@@ -2718,8 +2718,8 @@ MonoBehaviour:
           rid: 9016977407518441476
         BlackboardGroupReferences: []
         Root:
-          rid: 5974050224304029920
-        m_VersionTimestamp: 639238776312109623
+          rid: 5974050267958607956
+        m_VersionTimestamp: 639240553265930920
     - rid: 9016977407518441476
       type: {class: BlackboardReference, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -2781,7 +2781,7 @@ MonoBehaviour:
         Name: PatrolPoints
         m_Value: []
     - rid: 9016977771829919900
-      type: {class: 'BlackboardVariable`1[[Backend.Object.Character.Monster.MonsterStatus, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      type: {class: 'BlackboardVariable`1[[DdaIT.Object.Character.Monster.MonsterStatus, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 16258994407241459231
@@ -2789,7 +2789,7 @@ MonoBehaviour:
         Name: NttStatus
         m_Value: {fileID: 0}
     - rid: 9016977814382444749
-      type: {class: 'BlackboardVariable`1[[Backend.Object.Character.Monster.MonsterDetectController, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      type: {class: 'BlackboardVariable`1[[DdaIT.Object.Character.Monster.MonsterDetectController, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 936417723677326087
@@ -2805,7 +2805,7 @@ MonoBehaviour:
         Name: TargetDetected
         m_Value: 0
     - rid: 9016977815657250863
-      type: {class: 'BlackboardVariable`1[[Backend.Object.Character.Monster.Normal.NormalMovementController, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      type: {class: 'BlackboardVariable`1[[DdaIT.Object.Character.Monster.Normal.NormalMovementController, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 12833020967612333510

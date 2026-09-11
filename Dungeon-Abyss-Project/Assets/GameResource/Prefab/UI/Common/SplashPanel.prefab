@@ -62,7 +62,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 76714ca7c0e81e04fb7945bf8a7c34ca, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Backend.Object.UI.SplashPanel
+  m_EditorClassIdentifier: Assembly-CSharp::DdaIT.Object.UI.SplashPanel
   _useOpenSound: 0
   _openSoundKey: 
   _useCloseAnimation: 0
@@ -72,7 +72,7 @@ MonoBehaviour:
   _canvasGroup: {fileID: 1000000000000000003}
   _logo: {fileID: 1000000000000000024}
   _logoFadeInDuration: 1
-  _fadeOutDuration: 0.5
+  _fadeOutDuration: 1
 --- !u!1 &1000000000000000011
 GameObject:
   m_ObjectHideFlags: 0
@@ -138,7 +138,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 7482667652216324306, guid: 0dcc217873ac3d74e990d7c7634628bf, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -213,7 +213,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 08d2df5e8e388844da2183c23697ff31, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
