@@ -1,0 +1,13 @@
+---
+description: 스프라이트·픽셀아트·Aseprite·GenerateImage 그리기 시 생성본은 참고만 쓰고 마젠타 크로마키를 쓰지 않는다.
+alwaysApply: false
+---
+
+# Sprite draw
+
+스프라이트를 그릴 때는 `aseprite-sprite-draw` 스킬을 따른다.
+
+- 생성 이미지는 참고 레이어만. 최종 픽셀로 쓰지 않는다
+- 마젠타/`#FF00FF`/크림키/`rembg`로 배경을 따지 않는다
+- 빈 캔버스는 투명으로 두고, 빈칸 → 덩어리 → 음영 → 외곽선 순으로 그린다
+- 빈 캔버스에 `fill_area`를 쓰지 않는다
