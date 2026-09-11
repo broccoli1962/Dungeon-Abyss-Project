@@ -63,7 +63,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 59a175ea01b162844930d308f0629f84, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Backend.Object.UI.LoadingPanel
+  m_EditorClassIdentifier: Assembly-CSharp::DdaIT.Object.UI.LoadingPanel
   _useOpenSound: 0
   _openSoundKey: 
   _useCloseAnimation: 0

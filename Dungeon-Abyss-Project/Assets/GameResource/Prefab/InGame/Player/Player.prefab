@@ -406,6 +406,8 @@ SkinnedMeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -427,9 +429,11 @@ SkinnedMeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   serializedVersion: 2
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
@@ -543,10 +547,11 @@ GameObject:
   - component: {fileID: 2058110702299929050}
   - component: {fileID: 3371953179581035862}
   - component: {fileID: 5712642182925007735}
+  - component: {fileID: 4709695072577521688}
   - component: {fileID: 1782770430692539782}
   - component: {fileID: 3009230164092164904}
   - component: {fileID: 8624666606708189288}
-  - component: {fileID: 7604496895093607520}
+  - component: {fileID: 7620385657893488093}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -600,10 +605,10 @@ Rigidbody:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1511804621994429110}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -642,6 +647,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &4709695072577521688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1511804621994429110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb62cab6176363d4bac7a2218fe47ba1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DdaIT.Object.Character.Player.LocalPlayerInput
 --- !u!114 &1782770430692539782
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -655,6 +672,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerState: 0
+  _walkSpeed: 2
+  _sprintSpeed: 4
+  _rotSpeed: 4
 --- !u!114 &3009230164092164904
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -680,7 +700,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2eabf72a90e32646bbd32196cc680b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &7604496895093607520
+--- !u!114 &7620385657893488093
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -689,19 +709,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1511804621994429110}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b068bcdcd86950d40890d7bb56a48ea1, type: 3}
+  m_Script: {fileID: 11500000, guid: df64a0ba56a9596459a442df0e6eda80, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  <CharacterName>k__BackingField: 
-  <CurrentHealth>k__BackingField: 0
-  <MaxHealth>k__BackingField: 0
-  <MoveSpeed>k__BackingField: 1
-  <PhysicsDamage>k__BackingField: 0
-  <MagicDamage>k__BackingField: 0
-  _sightRange: 0
-  <RotSpeed>k__BackingField: 4
-  <WalkSpeed>k__BackingField: 2
-  <SprintSpeed>k__BackingField: 4
+  m_EditorClassIdentifier: Assembly-CSharp::DdaIT.Object.Character.Player.PlayerSessionActor
+  _slotValue: 0
+  _input: {fileID: 4709695072577521688}
+  _movement: {fileID: 1782770430692539782}
+  _combat: {fileID: 3009230164092164904}
+  _animation: {fileID: 8624666606708189288}
 --- !u!1 &2006658341554533844
 GameObject:
   m_ObjectHideFlags: 0

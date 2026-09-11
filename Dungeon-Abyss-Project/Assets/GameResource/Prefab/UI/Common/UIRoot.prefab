@@ -453,7 +453,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aee152b4c42c1104992664ea48d08486, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Backend.Object.UI.UIRegistry
+  m_EditorClassIdentifier: Assembly-CSharp::DdaIT.Object.UI.UIRegistry
   _layers:
   - layer: 0
     root: {fileID: 5002232687583192702}
