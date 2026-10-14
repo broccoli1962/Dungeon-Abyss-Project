@@ -5,11 +5,11 @@ namespace DdaIT.Object.Character
 {
     public abstract class CombatController : MonoBehaviour
     {
-        [Header("Combat Setting")]
-        [SerializeField] protected float _attackRange;
-
+        [SerializeField] private Collider _hitCollider;
         protected Animator _animator;
         protected bool _isAttacking;
+        public bool IsHitting => _hitCollider != null && _hitCollider.enabled;
+        public bool IsAttacking => _isAttacking;
 
         private static readonly int AttackHash = Animator.StringToHash("Attack");
 
@@ -25,8 +25,6 @@ namespace DdaIT.Object.Character
             return true;
         }
 
-        public void OnAttackStart() => TryPlayAttack();
-
         protected virtual void PerformAttack()
         {
             _isAttacking = true;
@@ -36,8 +34,19 @@ namespace DdaIT.Object.Character
             Debugger.LogProgress("Attacking!");
         }
 
+        public void HitStart(){
+            if(_hitCollider != null)
+                _hitCollider.enabled = true;
+        }
+
+        public void HitEnd(){
+            if(_hitCollider != null)
+                _hitCollider.enabled = false;
+        }
+
         public void OnAttackEnd()
         {
+            HitEnd();
             _isAttacking = false;
         }
     }

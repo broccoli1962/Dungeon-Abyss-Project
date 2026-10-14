@@ -41,18 +41,6 @@ namespace DdaIT.Object.Session
         public CharacterAnimationParams AnimationParams;
     }
 
-    public struct MonsterState
-    {
-        public int MonsterId;
-        public bool IsAlive;
-        public int TargetSlot; // -1 == None
-
-        public CombatRuntime Combat;
-
-        public float Yaw;
-        public Vector3 Position;
-    }
-
     public struct DoorState
     {
         public int DoorId;
@@ -69,7 +57,6 @@ namespace DdaIT.Object.Session
         public int FoorIndex;
         public RunPhase phase;
         public PlayerSlotState[] Players;
-        public MonsterState[] Monsters;
         public DoorState[] Doors;
 
         public const int MaxPlayer = 4;
@@ -79,6 +66,8 @@ namespace DdaIT.Object.Session
             Players = new PlayerSlotState[MaxPlayer];
             for (int i = 0; i < MaxPlayer; i++)
                 Players[i].Slot = new SlotId((byte)i);
+
+            Doors = new DoorState[0];
         }
     }
 }

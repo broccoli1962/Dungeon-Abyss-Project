@@ -1,4 +1,5 @@
 using System;
+using DdaIT.Object.Character;
 using DdaIT.Object.Session;
 using DdaIT.Util;
 using R3;
@@ -20,16 +21,25 @@ namespace DdaIT.Object.Character.Player
         [SerializeField] private PlayerMovementController _movement;
         [SerializeField] private PlayerCombatController _combat;
         [SerializeField] private PlayerAnimationController _animation;
+        [SerializeField] private PlayerPerceptionController _perception;
 
-        private RunState _state;
+        public PerceptionController Perception => _perception;
+
         private IDisposable _damageSub;
         private bool _isLocal;
+        private bool ReadsInput
+        {
+            get
+            {
+                if (_isLocal) return true;
+                return TryGetComponent<PlayerNetwork>(out var playerNet) && playerNet.IsOwner;
+            }
+        }
 
         public SlotId Slot => new SlotId(_slotValue);
 
-        public void Bind(RunState state, RunEvents events, bool isLocal)
+        public void Bind(RunEvents events, bool isLocal)
         {
-            _state = state;
             _isLocal = isLocal;
             _input.SetListening(isLocal);
 
@@ -39,52 +49,70 @@ namespace DdaIT.Object.Character.Player
 
         public CharacterCommand TickLocal(float deltaTime)
         {
-            if (_isLocal)
+            if (!ReadsInput)
+                return default;
+
+            if (!_input.IsListening)
+                _input.SetListening(true);
+
+            var snap = _input.Consume();
+            _movement.ApplyLocal(snap, deltaTime);
+
+            if (snap.AttackPressed && snap.Aim)
             {
-                var snap = _input.Consume();
-                _movement.ApplyLocal(snap, deltaTime);
-
-                ref var player = ref _state.Players[Slot.Value];
-                player.Position = _movement.SimulationPosition;
-                player.Yaw = _movement.SimulationYaw;
-
-                if (snap.AttackPressed && snap.Aim)
-                {
-                    _combat.TryPlayAttack();
-                }
-
-                _animation.Apply(new CharacterPresentation
-                {
-                    MoveDirection = _movement.MoveDirection,
-                    SpeedRatio = _movement.SpeedRatio,
-                    IsAiming = _movement.IsAiming,
-                }, deltaTime);
-
-                return new CharacterCommand
-                {
-                    SlotId = Slot,
-                    Move = snap.Move,
-                    Sprint = snap.Sprint,
-                    Aim = snap.Aim,
-                    AttackPressed = snap.AttackPressed && snap.Aim,
-                    InteractPressed = snap.InteractPressed,
-                    Yaw = _movement.SimulationYaw,
-                };
+                _combat.TryPlayAttack();
             }
 
-            ref var p = ref _state.Players[_slotValue];
-            _movement.ApplyReplicated(p.Position, p.Yaw, p.Aiming, p.AnimationParams.SpeedRatio);
-            _animation.Apply(new CharacterPresentation
+            ApplyPresentation(deltaTime);
+
+            return new CharacterCommand
             {
+                SlotId = Slot,
+                Position = _movement.SimulationPosition,
+                MoveDirection = _movement.MoveDirection,
+                Sprint = snap.Sprint,
+                Aim = snap.Aim,
+                AttackPressed = snap.AttackPressed && snap.Aim,
+                InteractPressed = snap.InteractPressed,
+                Yaw = _movement.SimulationYaw,
+                SpeedRatio = _movement.SpeedRatio,
+            };
+        }
+
+        private void ApplyPresentation(float deltaTime){
+            _animation.Apply(new CharacterPresentation{
                 MoveDirection = _movement.MoveDirection,
                 SpeedRatio = _movement.SpeedRatio,
                 IsAiming = _movement.IsAiming,
             }, deltaTime);
 
-            return default;
+            PushSimulationPoseFromMovement();
         }
 
-        public void SetViewCamera(Camera camera){
+        public void ApplyRemote(in PlayerPose pose, float deltaTime){
+            _movement.ApplyReplicated(pose.Position, pose.Yaw, pose.MoveDirection, pose.IsAiming, pose.SpeedRatio, deltaTime);
+            ApplyPresentation(deltaTime);
+        }
+
+        public void PlayRemoteAttack(){
+            _combat.TryPlayAttack();
+        }
+
+        public void PushSimulationPoseFromMovement()
+        {
+            if (_perception == null || _movement == null)
+                return;
+
+            _perception.SetSimulationPose(_movement.SimulationPosition, _movement.SimulationRotation);
+        }
+
+        public void ApplySimulationPose(Vector3 position, float yawDegrees)
+        {
+            _perception?.SetSimulationPose(position, yawDegrees);
+        }
+
+        public void SetViewCamera(Camera camera)
+        {
             _movement.SetCamera(camera);
         }
 

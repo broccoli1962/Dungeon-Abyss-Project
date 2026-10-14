@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 namespace DdaIT.Object.Session
@@ -25,13 +24,13 @@ namespace DdaIT.Object.Session
             if (!_authority.IsHost || _state.phase != RunPhase.Playing)
                 return;
 
+            ClearAttackPulse();
+
             for (int i = 0; i < commandCount; i++)
                 _attackCoolDown[i] = Mathf.Max(0f, _attackCoolDown[i] - deltaTime);
 
             for (int i = 0; i < commandCount; i++)
                 ApplyCommand(commands[i]);
-
-            TickMonster(deltaTime);
         }
 
         private void ApplyCommand(in CharacterCommand cmd)
@@ -40,10 +39,12 @@ namespace DdaIT.Object.Session
             if (!player.IsJoined || player.LifeState != LifeState.Alive)
                 return;
 
+            player.Position = cmd.Position;
+            player.AnimationParams.MoveDirection = cmd.MoveDirection;
             player.Yaw = cmd.Yaw;
             player.Aiming = cmd.Aim;
             player.AnimationParams.IsAiming = cmd.Aim;
-            player.AnimationParams.SpeedRatio = cmd.Move.sqrMagnitude > 0.01f ? (cmd.Sprint ? 1f : 0.5f) : 0f;
+            player.AnimationParams.SpeedRatio = cmd.SpeedRatio;
 
             if (cmd.AttackPressed)
                 TryAttack(cmd.SlotId);
@@ -60,36 +61,11 @@ namespace DdaIT.Object.Session
 
             _attackCoolDown[i] = RunRules.AttackCoolDown;
             _state.Players[i].AnimationParams.AttackPulse = true;
-
-            ref var attacker = ref _state.Players[i];
-            for (int j = 0; j < _state.Monsters.Length; j++)
-            {
-                ref var monster = ref _state.Monsters[j];
-                if (!monster.IsAlive)
-                    continue;
-                if (Vector3.Distance(attacker.Position, monster.Position) > RunRules.AttackRange)
-                    continue;
-
-                ApplyDamageToMonster(j, attacker.Slot.Value, attacker.Combat.Attack);
-            }
         }
 
-        private void ApplyDamageToMonster(int monsterId, int attackerSlot, float damage)
-        {
-            ref var monster = ref _state.Monsters[monsterId];
-            if (!monster.IsAlive)
-                return;
-
-            monster.Combat.Hp = Mathf.Max(0f, monster.Combat.Hp - damage);
-            bool dead = monster.Combat.Hp <= 0f;
-            if (dead)
-            {
-                monster.IsAlive = false;
-            }
-
-            _events.DamageApplied.OnNext(new DamageApplied(attackerSlot, targetKind: 1, monster.MonsterId, damage, monster.Combat.Hp, dead));
-        }
-
+        /// <summary>
+        /// 플레이어에게 데미지를 적용한다. 호스트만 호출한다.
+        /// </summary>
         public void ApplyDamageToPlayer(SlotId slot, float damage)
         {
             if (!_authority.IsHost)
@@ -120,27 +96,6 @@ namespace DdaIT.Object.Session
                 TryPartyDown();
         }
 
-        private void TryRevive(SlotId actor, SlotId target)
-        {
-            if (!_authority.IsHost)
-                return;
-
-            ref var a = ref _state.Players[actor.Value];
-            ref var t = ref _state.Players[target.Value];
-            if (a.LifeState != LifeState.Alive || t.LifeState != LifeState.Down)
-            {
-                return;
-            }
-            if (Vector3.Distance(a.Position, t.Position) > RunRules.InteractRange)
-            {
-                return;
-            }
-
-            t.LifeState = LifeState.Alive;
-            t.Combat.Hp = t.Combat.MaxHp * RunRules.ReviveHpRatio;
-            t.AnimationParams.LifeState = LifeState.Alive;
-        }
-
         private void TryInteract(SlotId slot)
         {
             ref var player = ref _state.Players[slot.Value];
@@ -160,11 +115,6 @@ namespace DdaIT.Object.Session
             }
         }
 
-        private void TickMonster(float deltaTime)
-        {
-
-        }
-
         private void TryPartyDown()
         {
             for (int i = 0; i < _state.Players.Length; i++)
@@ -176,8 +126,10 @@ namespace DdaIT.Object.Session
             SetPhase(RunPhase.PartyDown);
         }
 
-        private void ClearAttackPulse(){
-            for(int i = 0; i < _state.Players.Length; i++){
+        private void ClearAttackPulse()
+        {
+            for (int i = 0; i < _state.Players.Length; i++)
+            {
                 _state.Players[i].AnimationParams.AttackPulse = false;
             }
         }
@@ -190,6 +142,9 @@ namespace DdaIT.Object.Session
             _events.PhaseChanged.OnNext(phase);
         }
 
+        /// <summary>
+        /// 런을 시작한다. 호스트만 호출한다.
+        /// </summary>
         public void StartRun(uint seed)
         {
             if (!_authority.IsHost)

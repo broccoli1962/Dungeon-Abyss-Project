@@ -11,6 +11,7 @@ namespace DdaIT.AddressableKey
             {
                 { "AudioSource", "Assets/GameResource/Prefab/InGame/AudioSource.prefab" },
                 { "HostRunLoop", "Assets/GameResource/Prefab/InGame/HostRunLoop.prefab" },
+                { "Goblin", "Assets/GameResource/Prefab/InGame/Monster/Goblin.prefab" },
                 { "Player", "Assets/GameResource/Prefab/InGame/Player/Player.prefab" },
                 { "PlayerFollowCamera", "Assets/GameResource/Prefab/InGame/Player/PlayerFollowCamera.prefab" },
             };
@@ -24,6 +25,18 @@ namespace DdaIT.AddressableKey
             private static readonly Dictionary<string, string> Keys = new Dictionary<string, string>()
             {
                 { "AudioMixer", "Assets/GameResource/Audio/Mixer/AudioMixer.mixer" },
+            };
+
+            public static string Get<T>() => Keys.TryGetValue(typeof(T).Name, out var key) ? key : null;
+            public static string Get(string keyName) => Keys.TryGetValue(keyName, out var key) ? key : null;
+        }
+
+        public static class Network
+        {
+            private static readonly Dictionary<string, string> Keys = new Dictionary<string, string>()
+            {
+                { "NetworkManager", "Assets/GameResource/Prefab/Net/NetworkManager.prefab" },
+                { "RunSession", "Assets/GameResource/Prefab/Net/RunSession.prefab" },
             };
 
             public static string Get<T>() => Keys.TryGetValue(typeof(T).Name, out var key) ? key : null;
@@ -64,6 +77,8 @@ namespace DdaIT.AddressableKey
                 { "UIBlocker", "Assets/GameResource/Prefab/UI/Common/UIBlocker.prefab" },
                 { "UIRoot", "Assets/GameResource/Prefab/UI/Common/UIRoot.prefab" },
                 { "TitlePanel", "Assets/GameResource/Prefab/UI/Panel/TitlePanel.prefab" },
+                { "ClientPopup", "Assets/GameResource/Prefab/UI/Popup/ClientPopup.prefab" },
+                { "HostPopup", "Assets/GameResource/Prefab/UI/Popup/HostPopup.prefab" },
                 { "OptionPopup", "Assets/GameResource/Prefab/UI/Popup/OptionPopup.prefab" },
             };
 
