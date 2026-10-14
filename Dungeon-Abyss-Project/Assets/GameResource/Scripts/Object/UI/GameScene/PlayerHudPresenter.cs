@@ -1,24 +1,21 @@
 using DdaIT.Object.Session;
 using R3;
+using DdaIT.Object.Character;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace DdaIT.Object.UI
 {
     public class PlayerHudPresenter : UIPresenter<PlayerHudPanel>
     {
-        private RunState _state;
-        private RunEvents _events;
-        private SlotId _localSlot;
-        private CompositeDisposable _disposables = new CompositeDisposable();
+        private readonly CompositeDisposable _disposables = new();
 
-        public void Bind(RunState state, RunEvents events, SlotId localSlot)
+        public void Bind(PlayerNetwork player)
         {
-            _state = state;
-            _events = events;
-            _localSlot = localSlot;
-            
-            Refresh();
-            _events.DamageApplied.Subscribe(OnDamage).AddTo(_disposables);
+            _disposables.Clear();
+
+            Refresh(player.Vitals);
+            player.VitalChanged.Subscribe(Refresh).AddTo(_disposables);
         }
 
         public override void OnOpen()
@@ -32,16 +29,17 @@ namespace DdaIT.Object.UI
             base.OnClose();
         }
 
-        private void OnDamage(DamageApplied e){
-            if(e.TargetKind != 0 || e.TargetId != _localSlot.Value){
-                return;
-            }
-            Refresh();
+        private void Refresh(PlayerVital vitals){
+            SetGuage(View.HealthBar, vitals.Health, vitals.MaxHealth);
+            SetGuage(View.StaminaBar, vitals.Stamina, vitals.MaxStamina);
+            SetGuage(View.HungerBar, vitals.Hunger, vitals.MaxHunger);
         }
 
-        private void Refresh(){
-            ref var player = ref _state.Players[_localSlot.Value];
-            View.HealthBar.SetRatio(player.Combat.Hp / player.Combat.MaxHp);
+        private static void SetGuage(SingleGaugeBar bar, float value, float maxValue){
+            if(bar == null) return;
+
+            bar.SetRatio(maxValue > 0f ? value / maxValue : 0f);
+            bar.SetText(Mathf.CeilToInt(value).ToString(), Mathf.CeilToInt(maxValue).ToString());
         }
     }
 }
