@@ -12,9 +12,10 @@ namespace DdaIT.Object.Character.Player
         [SerializeField] private float _walkSpeed = 2f;
         [SerializeField] private float _sprintSpeed = 4f;
         [SerializeField] private float _rotSpeed = 4f;
+        [SerializeField] private float _remoteSnapDistance = 3f;
+        [SerializeField] private float _remoteSmoothing = 15f;
 
         private Camera _camera;
-        private Vector2 _mousePosition;
 
         public Vector3 MoveDirection { get; private set; }
         public Vector3 InputVector { get; private set; }
@@ -35,15 +36,24 @@ namespace DdaIT.Object.Character.Player
             HandleMovement(deltaTime);
         }
 
-        public void ApplyReplicated(Vector3 position, float yaw, bool aiming, float speedRatio)
+        public void ApplyReplicated(Vector3 position, float yaw, Vector3 moveDirection, bool aiming, float speedRatio, float deltaTime)
         {
             IsAiming = aiming;
             SpeedRatio = speedRatio;
             IsSprinting = speedRatio >= 0.99f;
-            InputVector = speedRatio > 0.001f ? SimulationRotation * Vector3.forward : Vector3.zero;
-            MoveDirection = speedRatio > 0.001f ? SimulationRotation * Vector3.forward : Vector3.zero;
-            _rigidbody.MovePosition(position);
-            _rigidbody.MoveRotation(Quaternion.Euler(0f, yaw, 0f));
+            InputVector = moveDirection;
+            MoveDirection = moveDirection;
+
+            var targetRot = Quaternion.Euler(0f, yaw, 0f);
+            if(Vector3.Distance(SimulationPosition, position) > _remoteSnapDistance){
+                _rigidbody.MovePosition(position);
+                _rigidbody.MoveRotation(targetRot);
+                return;
+            }
+            
+            float t = 1f - Mathf.Exp(-_remoteSmoothing * deltaTime);
+            _rigidbody.MovePosition(Vector3.Lerp(SimulationPosition, position, t));
+            _rigidbody.MoveRotation(Quaternion.Slerp(SimulationRotation, targetRot, t));
         }
 
         private void UpdateState()
@@ -128,29 +138,6 @@ namespace DdaIT.Object.Character.Player
 
             var targetRot = Quaternion.LookRotation(direction);
             _rigidbody.MoveRotation(Quaternion.Slerp(SimulationRotation, targetRot, _rotSpeed * deltaTime));
-        }
-
-        #endregion
-
-        #region Input Callbacks
-        private void OnMove(InputAction.CallbackContext context)
-        {
-            InputVector = context.ReadValue<Vector2>();
-        }
-
-        private void OnLook(InputAction.CallbackContext context)
-        {
-            _mousePosition = context.ReadValue<Vector2>();
-        }
-
-        private void OnSprint(InputAction.CallbackContext context)
-        {
-            IsSprinting = context.ReadValueAsButton();
-        }
-
-        private void OnAim(InputAction.CallbackContext context)
-        {
-            IsAiming = context.ReadValueAsButton();
         }
         #endregion
     }

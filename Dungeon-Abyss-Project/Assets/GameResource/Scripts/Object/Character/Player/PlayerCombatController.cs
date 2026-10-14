@@ -13,13 +13,6 @@ namespace DdaIT.Object.Character.Player
             _movementController = GetComponent<PlayerMovementController>();
         }
 
-        private void OnAttack(InputAction.CallbackContext context)
-        {
-            if (!_movementController.IsAiming) return;
-
-            OnAttackStart();
-        }
-
         protected override void PerformAttack()
         {
             base.PerformAttack();

@@ -4,6 +4,8 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Unity.Netcode;
+using DdaIT.AddressableKey;
 
 namespace DdaIT.Object.Management
 {
@@ -72,6 +74,7 @@ namespace DdaIT.Object.Management
                 // 코어 초기화와 커튼 프리워밍을 겹친다.
                 await UniTask.WhenAll(
                     GameManager.InitializeCore(),
+                    StartNetworkManagerAsync(),
                     UIManager.PreloadAsync<LoadingPanel>());
 
                 // 첫 씬은 이미 로드돼 있으므로 씬 로드 단계를 건너뛰고 Context 만 돌린다.
@@ -145,6 +148,13 @@ namespace DdaIT.Object.Management
             {
                 _isLoading = false;
             }
+        }
+
+        public static async UniTask StartNetworkManagerAsync(){
+            if(NetworkManager.Singleton != null) return;
+            
+            var prefab = await ResourceManager.LoadComponentAsync<NetworkManager>(AddressableKeys.Network.Get<NetworkManager>());
+            UnityEngine.Object.Instantiate(prefab);
         }
 
         /// <summary>씬 로드 0.6 + 대상 씬 프리로드 0.3 의 합산 진행률. 나머지 0.1 은 EnterAsync 완료 시 한 번에 채운다.</summary>
