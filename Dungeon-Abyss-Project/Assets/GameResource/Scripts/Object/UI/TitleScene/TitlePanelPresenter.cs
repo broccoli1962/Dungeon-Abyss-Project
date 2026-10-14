@@ -13,7 +13,8 @@ namespace DdaIT
         {
             base.OnOpen();
 
-            View.GameStartButton.OnClickAsObservable().Subscribe(OnGameStartButtonClicked).AddTo(_disposables);
+            View.GameHostButton.OnClickAsObservable().Subscribe(OnGameStartButtonClicked).AddTo(_disposables);
+            View.GameClientButton.OnClickAsObservable().Subscribe(OnGameClientButtonClicked).AddTo(_disposables);
             View.GameOptionButton.OnClickAsObservable().Subscribe(OnGameOptionButtonClicked).AddTo(_disposables);
             View.GameExitButton.OnClickAsObservable().Subscribe(OnGameExitButtonClicked).AddTo(_disposables);
         }
@@ -41,7 +42,12 @@ namespace DdaIT
 
         private void OnGameStartButtonClicked(Unit _)
         {
-            AppFlow.LoadSceneAsync(SceneId.GameScene).Forget();
+            UIManager.OpenAsync<HostPopup>().Forget();
+        }
+
+        private void OnGameClientButtonClicked(Unit _)
+        {
+            UIManager.OpenAsync<ClientPopup>().Forget();
         }
     }
 }
