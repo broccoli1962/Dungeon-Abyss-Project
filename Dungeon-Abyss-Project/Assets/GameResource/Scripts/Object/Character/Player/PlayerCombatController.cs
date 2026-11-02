@@ -1,22 +1,24 @@
 using DdaIT.Util.Input;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace DdaIT.Object.Character.Player
 {
     public class PlayerCombatController : CombatController
     {
-        private PlayerMovementController _movementController;
         protected override void Awake()
         {
             base.Awake();
-
-            _movementController = GetComponent<PlayerMovementController>();
         }
 
-        protected override void PerformAttack()
+        protected override void AttackStart()
         {
-            base.PerformAttack();
-
+            base.AttackStart();
         }
+
+        // public bool TryResolveHit(Collider other, Component attacker, out HitTarget target){
+
+        //     return false;
+        // }
     }
 }

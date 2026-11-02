@@ -44,7 +44,7 @@ namespace DdaIT.Object.Character.Monster
         {
             MonsterCombatController combat = Self?.Value?.Combat;
             if (combat != null && combat.IsAttacking)
-                combat.OnAttackEnd();
+                combat.AttackEnd();
         }
     }
 }

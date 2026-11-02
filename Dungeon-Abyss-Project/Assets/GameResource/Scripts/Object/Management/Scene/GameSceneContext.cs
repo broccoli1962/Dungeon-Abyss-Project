@@ -269,6 +269,12 @@ namespace DdaIT.Object.Management
             var player = state.Players[slot];
             player.IsJoined = true;
             player.LifeState = LifeState.Alive;
+            
+            player.AnimationParams = default;
+            player.AnimationParams.LifeState = LifeState.Alive;
+            player.Aiming = false;
+            player.Yaw = actor.CachedTransform.eulerAngles.y;
+
             player.Position = actor.CachedTransform.position;
             player.Combat.Hp = player.Combat.MaxHp = 20f;
             player.Stamina = player.MaxStamina = 10f;
@@ -277,6 +283,8 @@ namespace DdaIT.Object.Management
             player.Combat.Attack = 10f;
             player.Combat.MoveSpeedMul = 1f;
             state.Players[slot] = player;
+
+            _session.Simulation.ResetPlayerTimer(new SlotId(slot));
 
             if(actor.TryGetComponent<PlayerNetwork>(out var playerNet)){
                 playerNet.ServerSetVitals(new PlayerVital{
@@ -287,9 +295,10 @@ namespace DdaIT.Object.Management
                     Hunger = player.Hunger,
                     MaxHunger = player.MaxHunger,
                 });
+                playerNet.ServerSetLifeState(player.LifeState);
             }
 
-            actor.Bind(_session.Events, isLocal);
+            actor.Bind(_session.Events);
 
             if(isLocal){
                 AttachLocalCamera(actor);

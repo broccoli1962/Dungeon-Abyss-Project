@@ -1,5 +1,3 @@
-using System;
-using System.Threading;
 using DdaIT.Util;
 using DdaIT.Util.Input;
 using UnityEngine;
@@ -32,43 +30,41 @@ namespace DdaIT.Object.Character.Player
         private void Awake()
         {
             _actions = new PlayerInput_Actions();
+            var player = _actions.Player;
+            player.Move.performed += OnMove;
+            player.Move.canceled += OnMove;
+            player.Look.performed += OnLook;
+            player.Look.canceled += OnLook;
+            player.Sprint.performed += OnSprint;
+            player.Sprint.canceled += OnSprint;
+            player.Aim.performed += OnAim;
+            player.Aim.canceled += OnAim;
+            player.Attack.started += OnAttack;
+            player.Interact.started += OnInteract;
         }
 
         public void SetListening(bool listen)
         {
-            if (IsListening == listen) return;
+            if (_actions == null || IsListening == listen) return;
 
             IsListening = listen;
             if (listen)
             {
+                ResetState();
                 _actions.Player.Enable();
-                _actions.Player.Move.performed += OnMove;
-                _actions.Player.Move.canceled += OnMove;
-                _actions.Player.Look.performed += OnLook;
-                _actions.Player.Look.canceled += OnLook;
-                _actions.Player.Sprint.performed += OnSprint;
-                _actions.Player.Sprint.canceled += OnSprint;
-                _actions.Player.Aim.performed += OnAim;
-                _actions.Player.Aim.canceled += OnAim;
-                _actions.Player.Attack.started += OnAttack;
-                _actions.Player.Interact.started += OnInteract;
             }
             else
             {
-                _actions.Player.Move.performed -= OnMove;
-                _actions.Player.Move.canceled -= OnMove;
-                _actions.Player.Look.performed -= OnLook;
-                _actions.Player.Look.canceled -= OnLook;
-                _actions.Player.Sprint.performed -= OnSprint;
-                _actions.Player.Sprint.canceled -= OnSprint;
-                _actions.Player.Aim.performed -= OnAim;
-                _actions.Player.Aim.canceled -= OnAim;
-                _actions.Player.Attack.started -= OnAttack;
+                _actions.Player.Disable();
+                ResetState();
             }
         }
 
         public LocalInputSnapShot Consume()
         {
+            if (!IsListening)
+                return default;
+
             var snap = new LocalInputSnapShot
             {
                 Move = _move,
@@ -83,11 +79,36 @@ namespace DdaIT.Object.Character.Player
             return snap;
         }
 
-        private void OnDisable() => SetListening(false);
+        private void ResetState(){
+            _move = default;
+            _look = default;
+            _sprint = false;
+            _aim = false;
+            _attackQueued = false;
+            _interactQueued = false;
+        }
 
-        private void OnDestroy(){
+        private void OnDestroy()
+        {
+            if (_actions == null)
+                return;
+
             SetListening(false);
-            _actions?.Dispose();
+
+            var player = _actions.Player;
+            player.Move.performed -= OnMove;
+            player.Move.canceled -= OnMove;
+            player.Look.performed -= OnLook;
+            player.Look.canceled -= OnLook;
+            player.Sprint.performed -= OnSprint;
+            player.Sprint.canceled -= OnSprint;
+            player.Aim.performed -= OnAim;
+            player.Aim.canceled -= OnAim;
+            player.Attack.started -= OnAttack;
+            player.Interact.started -= OnInteract;
+
+            _actions.Dispose();
+            _actions = null;
         }
 
         private void OnMove(InputAction.CallbackContext context) => _move = context.ReadValue<Vector2>();

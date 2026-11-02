@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using DdaIT.Object.Character;
 using DdaIT.Object.Character.Player;
 using DdaIT.Util;
@@ -11,6 +12,7 @@ namespace DdaIT.Object.Session
         private RunState _state;
         private PlayerSessionActor[] _players;
         private readonly CharacterCommand[] _commands = new CharacterCommand[RunRules.MaxPlayer];
+        private readonly List<HitTarget> _hitBuffer = new();
         private byte _localSlot;
 
         public void Bind(RunSimulation sim, RunState state, PlayerSessionActor[] players, byte localSlot)
@@ -44,14 +46,31 @@ namespace DdaIT.Object.Session
             for (int i = 0; i < _players.Length; i++)
             {
                 var actor = _players[i];
-                if(actor == null)
+                if (actor == null)
                     continue;
 
-                if(!actor.TryGetComponent<PlayerNetwork>(out var playerNet))
+                _hitBuffer.Clear();
+                actor.DrainHit(_hitBuffer);
+
+                for (int h = 0; h < _hitBuffer.Count; h++)
+                {
+                    _sim.ResolveHit(new HitTarget(HitTargetKind.Player, actor.Slot.Value), _hitBuffer[h]);
+                }
+            }
+
+            for (int i = 0; i < _players.Length; i++)
+            {
+                var actor = _players[i];
+                if (actor == null)
+                    continue;
+
+                if (!actor.TryGetComponent<PlayerNetwork>(out var playerNet))
                     continue;
 
                 var player = _state.Players[actor.Slot.Value];
-                playerNet.ServerSetPose(new PlayerPose{
+                playerNet.ServerSetLifeState(player.LifeState);
+                playerNet.ServerSetPose(new PlayerPose
+                {
                     Position = player.Position,
                     Yaw = player.Yaw,
                     MoveDirection = player.AnimationParams.MoveDirection,
@@ -59,7 +78,8 @@ namespace DdaIT.Object.Session
                     IsAiming = player.Aiming,
                 });
 
-                playerNet.ServerSetVitals(new PlayerVital{
+                playerNet.ServerSetVitals(new PlayerVital
+                {
                     Health = player.Combat.Hp,
                     MaxHealth = player.Combat.MaxHp,
                     Stamina = player.Stamina,
@@ -68,7 +88,10 @@ namespace DdaIT.Object.Session
                     MaxHunger = player.MaxHunger,
                 });
 
-                if(player.AnimationParams.AttackPulse){
+                if (_state.phase == RunPhase.Playing
+                    && player.LifeState == LifeState.Alive
+                    && player.AnimationParams.AttackPulse)
+                {
                     playerNet.ServerPlayAttack();
                 }
             }

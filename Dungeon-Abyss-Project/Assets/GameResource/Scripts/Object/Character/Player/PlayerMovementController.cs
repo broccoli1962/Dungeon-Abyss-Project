@@ -36,6 +36,21 @@ namespace DdaIT.Object.Character.Player
             HandleMovement(deltaTime);
         }
 
+        public void StopMovement(){
+            _playerState = PlayerState.Idle;
+            InputVector = Vector3.zero;
+            MoveDirection = Vector3.zero;
+            IsAiming = false;
+            IsSprinting = false;
+            SpeedRatio = 0f;
+
+            if(_rigidbody != null && !_rigidbody.isKinematic){
+                Vector3 velocity = _rigidbody.linearVelocity;
+                _rigidbody.linearVelocity = new Vector3(0f, velocity.y, 0f);
+                _rigidbody.angularVelocity = Vector3.zero;
+            }
+        }
+
         public void ApplyReplicated(Vector3 position, float yaw, Vector3 moveDirection, bool aiming, float speedRatio, float deltaTime)
         {
             IsAiming = aiming;
