@@ -7,16 +7,25 @@ namespace DdaIT.Object.Session
         public readonly int TargetId;
         public readonly float Amount;
         public readonly float HpAfter;
+        public readonly LifeState LifeStateAfter;
+
         public readonly bool DownOrDead;
 
-        public DamageApplied(int attackerSlot, int targetKind, int targetId, float amount, float hpAfter, bool downOrDead)
+        public DamageApplied(int attackerSlot,
+            int targetKind,
+            int targetId,
+            float amount,
+            float hpAfter,
+            LifeState lifeStateAfter)
         {
             AttackerSlot = attackerSlot;
             TargetKind = targetKind;
             TargetId = targetId;
             Amount = amount;
             HpAfter = hpAfter;
-            DownOrDead = downOrDead;
+            LifeStateAfter = lifeStateAfter;
+            DownOrDead = lifeStateAfter == LifeState.Down ||
+                        lifeStateAfter == LifeState.Dead;
         }
     }
 

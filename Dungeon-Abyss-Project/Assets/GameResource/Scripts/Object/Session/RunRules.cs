@@ -7,6 +7,7 @@ namespace DdaIT.Object.Session
         public const float AttackRange = 1.8f;
         public const float AttackCoolDown = 0.6f;
         public const float InteractRange = 1.5f;
+        public const float BleedOutSeconds = 20f;
 
         public static bool TeamKill => true;
     }

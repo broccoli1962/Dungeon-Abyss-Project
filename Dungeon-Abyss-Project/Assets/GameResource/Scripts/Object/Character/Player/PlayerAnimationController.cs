@@ -5,27 +5,97 @@ namespace DdaIT.Object.Character.Player
 {
     public class PlayerAnimationController : AnimationController
     {
-        private readonly int _animSpeed = Animator.StringToHash("Speed");
-        private readonly int _animInputX = Animator.StringToHash("InputX");
-        private readonly int _animInputY = Animator.StringToHash("InputY");
-        private readonly int _animIsAiming = Animator.StringToHash("IsAiming");
+        private static readonly int SpeedHash = Animator.StringToHash("Speed");
+        private static readonly int InputXHash = Animator.StringToHash("InputX");
+        private static readonly int InputYHash = Animator.StringToHash("InputY");
+        private static readonly int AimHash = Animator.StringToHash("IsAiming");
+        private static readonly int HitHash = Animator.StringToHash("Hit");
+        private static readonly int AttackHash = Animator.StringToHash("Attack");
+        private static readonly int LifeHash = Animator.StringToHash("LifeState");
+
+        private static readonly int LocomotionState = Animator.StringToHash("Base Layer.Locomotion");
+        private static readonly int DownState = Animator.StringToHash("Base Layer.Down");
+        private static readonly int DeadState = Animator.StringToHash("Base Layer.Dead");
+        private static readonly int EmptyAttackState = Animator.StringToHash("Attack.Empty");
+
+        private LifeState _lifeState = LifeState.Absent;
+        private bool _hasLifeState;
+        private int _attackLayer = -1;
+        private float _aliveAttackWeight = 1f;
+
+        protected override void Awake()
+        {
+            base.Awake();
+            _attackLayer = _animator.GetLayerIndex("Attack");
+            if(_attackLayer >= 0)
+                _aliveAttackWeight = _animator.GetLayerWeight(_attackLayer);
+        }
+
+        public void ApplyLifeState(LifeState state){
+            if(_hasLifeState && _lifeState == state)
+                return;
+
+            _hasLifeState = true;
+            _lifeState = state;
+            SetAnimationInt(LifeHash, (int)state);
+            _animator.ResetTrigger(HitHash);
+            _animator.ResetTrigger(AttackHash);
+            ResetLocomotionParameters();
+
+            if(_attackLayer >= 0){
+                _animator.Play(EmptyAttackState, _attackLayer, 0f);
+                _animator.SetLayerWeight(_attackLayer, state == LifeState.Alive ? _aliveAttackWeight : 0f);
+            }
+
+            switch(state){
+                case LifeState.Alive:
+                    _animator.CrossFadeInFixedTime(LocomotionState, 0.08f, 0, 0f);
+                    break;
+                case LifeState.Down:
+                    _animator.CrossFadeInFixedTime(DownState, 0.08f, 0, 0f);
+                    break;
+                case LifeState.Dead:
+                    _animator.CrossFadeInFixedTime(DeadState, 0.08f, 0, 0f);
+                    break;
+            }
+        }
 
         public void Apply(in CharacterPresentation p, float dt)
         {
-            SetAnimationBool(_animIsAiming, p.IsAiming);
+            if(_lifeState != LifeState.Alive){
+                ResetLocomotionParameters();
+                return;
+            }
+
+            SetAnimationBool(AimHash, p.IsAiming);
             if (p.IsAiming)
             {
                 var local = transform.InverseTransformDirection(p.MoveDirection);
-                SetAnimationFloat(_animInputX, local.x, 0.1f, dt);
-                SetAnimationFloat(_animInputY, local.z, 0.1f, dt);
-                SetAnimationFloat(_animSpeed, 0f, 0.1f, dt);
+                SetAnimationFloat(InputXHash, local.x, 0.1f, dt);
+                SetAnimationFloat(InputYHash, local.z, 0.1f, dt);
+                SetAnimationFloat(SpeedHash, 0f, 0.1f, dt);
             }
             else
             {
-                SetAnimationFloat(_animSpeed, p.SpeedRatio, 0.15f, dt);
-                SetAnimationFloat(_animInputX, 0f, 0.1f, dt);
-                SetAnimationFloat(_animInputY, 0f, 0.1f, dt);
+                SetAnimationFloat(SpeedHash, p.SpeedRatio, 0.15f, dt);
+                SetAnimationFloat(InputXHash, 0f, 0.1f, dt);
+                SetAnimationFloat(InputYHash, 0f, 0.1f, dt);
             }
+        }
+
+        public void PlayHit(){
+            if(_lifeState != LifeState.Alive){
+                return;
+            }
+
+            SetAnimationTrigger(HitHash);
+        }
+
+        private void ResetLocomotionParameters(){
+            SetAnimationBool(AimHash, false);
+            SetAnimationFloat(InputXHash, 0f);
+            SetAnimationFloat(InputYHash, 0f);
+            SetAnimationFloat(SpeedHash, 0f);
         }
     }
 }

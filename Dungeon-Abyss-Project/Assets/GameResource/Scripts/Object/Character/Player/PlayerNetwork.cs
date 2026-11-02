@@ -17,20 +17,26 @@ namespace DdaIT.Object.Character
             readPerm: NetworkVariableReadPermission.Owner
         );
 
+        private readonly NetworkVariable<LifeState> _lifeState = new(
+            LifeState.Absent,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Server
+        );
+
         //수치 변경 이벤트
         private readonly Subject<PlayerVital> _vitalChanged = new();
         public PlayerVital Vitals => _vitals.Value;
         public Observable<PlayerVital> VitalChanged => _vitalChanged;
+        public SlotId Slot => new SlotId(_slot.Value);
 
         private CharacterCommand _pending;
         private bool _hasCommand;
         private byte _assignedSlot;
 
-        public SlotId Slot => new SlotId(_slot.Value);
-
         #region 네트워크 상태 관리
         public override void OnNetworkSpawn()
         {
+            _hasCommand = false;
             if (IsServer)
             {
                 _slot.Value = _assignedSlot;
@@ -39,18 +45,41 @@ namespace DdaIT.Object.Character
                     Position = transform.position,
                     Yaw = transform.eulerAngles.y,
                 };
+                _lifeState.Value = LifeState.Absent;
             }
 
             _slot.OnValueChanged += OnSlotChanged;
             _vitals.OnValueChanged += OnVitalsChanged;
+            _lifeState.OnValueChanged += OnLifeStateChanged;
+
             ApplySlot(_slot.Value);
+            _actor?.ApplyLifeState(_lifeState.Value);
+            RefreshInputAuthority();
         }
 
         public override void OnNetworkDespawn()
         {
             _slot.OnValueChanged -= OnSlotChanged;
             _vitals.OnValueChanged -= OnVitalsChanged;
+            _lifeState.OnValueChanged -= OnLifeStateChanged;
+            _hasCommand = false;
+
+            if (_actor != null)
+            {
+                _actor.SetInputAuthority(false);
+                _actor.UnBind();
+                _actor.ApplyLifeState(LifeState.Absent);
+            }
         }
+
+        public override void OnGainedOwnership() => RefreshInputAuthority();
+        public override void OnLostOwnership() => RefreshInputAuthority();
+
+        private void RefreshInputAuthority()
+        {
+            _actor?.SetInputAuthority(IsSpawned && IsOwner);
+        }
+
         #endregion
 
         #region 틱
@@ -58,7 +87,7 @@ namespace DdaIT.Object.Character
         {
             if (!IsSpawned || _actor == null) return;
 
-            if (IsOwner)
+            if (IsOwner && _actor.CanAct)
             {
                 SubmitCommandRpc(_actor.TickLocal(Time.fixedDeltaTime));
                 return;
@@ -80,6 +109,16 @@ namespace DdaIT.Object.Character
         public void PrepareSlot(byte slot)
         {
             _assignedSlot = slot;
+        }
+
+        private void OnLifeStateChanged(LifeState oldValue, LifeState newValue)
+        {
+            if (newValue != LifeState.Alive)
+            {
+                _hasCommand = false;
+            }
+
+            _actor?.ApplyLifeState(newValue);
         }
 
         private void OnVitalsChanged(PlayerVital oldValue, PlayerVital newValue)
@@ -104,23 +143,46 @@ namespace DdaIT.Object.Character
         #region 서버 명령 처리
         public void ServerSetPose(in PlayerPose pose)
         {
-            if (!IsServer) return;
+            if (!IsServer || !IsSpawned) return;
 
             _pose.Value = pose;
         }
 
         public void ServerPlayAttack()
         {
-            if (!IsServer) return;
+            if (!IsServer || !IsSpawned || _lifeState.Value != LifeState.Alive) return;
 
-            AttackRpc();
+            AttackApproveRpc();
         }
 
         public void ServerSetVitals(in PlayerVital vitals)
         {
-            if (!IsServer) return;
+            if (!IsServer || !IsSpawned) return;
 
             _vitals.Value = vitals;
+        }
+
+        public void ServerSetLifeState(LifeState state)
+        {
+            if (!IsServer || !IsSpawned) return;
+
+            _lifeState.Value = state;
+        }
+
+        public void ServerNotifyDamage(in DamageApplied damage)
+        {
+            if (!IsServer || !IsSpawned) return;
+
+            if (damage.TargetKind != (int)HitTargetKind.Player || damage.TargetId != _slot.Value)
+            {
+                return;
+            }
+
+            ServerSetLifeState(damage.LifeStateAfter);
+
+            if(damage.Amount > 0f && damage.LifeStateAfter == LifeState.Alive){
+                PlayHitRpc();
+            }
         }
         #endregion
 
@@ -128,15 +190,23 @@ namespace DdaIT.Object.Character
         [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
         private void SubmitCommandRpc(CharacterCommand command)
         {
+            if(_lifeState.Value != LifeState.Alive) return;
+
             command.SlotId = Slot;
             _pending = command;
             _hasCommand = true;
         }
 
-        [Rpc(SendTo.NotOwner)]
-        private void AttackRpc()
+        [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
+        private void AttackApproveRpc()
         {
-            _actor.PlayRemoteAttack();
+            _actor?.PlayRemoteAttack(canDetectHits: IsServer);
+        }
+
+        [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
+        private void PlayHitRpc()
+        {
+            _actor?.PlayRemoteHit();
         }
         #endregion
     }

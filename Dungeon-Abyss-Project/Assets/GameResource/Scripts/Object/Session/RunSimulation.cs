@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace DdaIT.Object.Session
@@ -8,6 +9,7 @@ namespace DdaIT.Object.Session
         private readonly RunEvents _events;
         private readonly ISimAuthority _authority;
         private readonly float[] _attackCoolDown = new float[RunRules.MaxPlayer];
+        private readonly float[] _downRemaining = new float[RunRules.MaxPlayer];
 
         public RunSimulation(RunState state, RunEvents events, ISimAuthority authority)
         {
@@ -21,16 +23,78 @@ namespace DdaIT.Object.Session
         /// </summary>
         public void Tick(float deltaTime, CharacterCommand[] commands, int commandCount)
         {
-            if (!_authority.IsHost || _state.phase != RunPhase.Playing)
+            if (!_authority.IsHost)
                 return;
 
             ClearAttackPulse();
 
-            for (int i = 0; i < commandCount; i++)
+            if(_state.phase != RunPhase.Playing)
+                return;
+
+            TickDownTimer(deltaTime);
+
+            if(_state.phase != RunPhase.Playing)
+                return;
+
+            for (int i = 0; i < _attackCoolDown.Length; i++)
                 _attackCoolDown[i] = Mathf.Max(0f, _attackCoolDown[i] - deltaTime);
 
             for (int i = 0; i < commandCount; i++)
                 ApplyCommand(commands[i]);
+        }
+
+        public void ResetPlayerTimer(SlotId slot){
+            if(!_authority.IsHost || slot.Value >= _downRemaining.Length)
+                return;
+
+            _downRemaining[slot.Value] = 0f;
+            _attackCoolDown[slot.Value] = 0f;
+        }
+
+        private void SetPlayerLifeState(int index, LifeState next){
+            ref var player = ref _state.Players[index];
+            if(player.LifeState == next)
+                return;
+
+            player.LifeState = next;
+            player.AnimationParams.LifeState = next;
+            _downRemaining[index] = next == LifeState.Down ? RunRules.BleedOutSeconds : 0f;
+
+            if(next == LifeState.Down || next == LifeState.Dead){
+                player.Combat.Hp = 0f;
+            }
+
+            if(next != LifeState.Alive){
+                player.Aiming = false;
+                player.AnimationParams.IsAiming = false;
+                player.AnimationParams.MoveDirection = Vector3.zero;
+                player.AnimationParams.SpeedRatio = 0f;
+                player.AnimationParams.AttackPulse = false;
+            }
+        }
+
+        private void TickDownTimer(float deltaTime){
+            bool someoneDied = false;
+
+            for(int i = 0; i < _state.Players.Length; i++){
+                ref var player = ref _state.Players[i];
+                if(!player.IsJoined || player.LifeState != LifeState.Down){
+                    _downRemaining[i] = 0f;
+                    continue;
+                }
+
+                _downRemaining[i] = Mathf.Max(0f, _downRemaining[i] - deltaTime);
+                if(_downRemaining[i] > 0f){
+                    continue;
+                }
+
+                SetPlayerLifeState(i, LifeState.Dead);
+                someoneDied = true;
+            }
+
+            if(someoneDied){
+                TryPartyDown();
+            }
         }
 
         private void ApplyCommand(in CharacterCommand cmd)
@@ -56,26 +120,81 @@ namespace DdaIT.Object.Session
         private void TryAttack(SlotId slot)
         {
             int i = slot.Value;
-            if (_attackCoolDown[i] > 0f)
+            ref var player = ref _state.Players[i];
+
+            if(!player.IsJoined || player.LifeState != LifeState.Alive)
+                return;
+
+            if(!player.Aiming)
+                return;
+
+            if(_attackCoolDown[i] > 0f)
                 return;
 
             _attackCoolDown[i] = RunRules.AttackCoolDown;
-            _state.Players[i].AnimationParams.AttackPulse = true;
+            player.AnimationParams.AttackPulse = true;
         }
 
         /// <summary>
-        /// 플레이어에게 데미지를 적용한다. 호스트만 호출한다.
+        /// 타격 정보로 공격력을 조회하고 최종 데미지를 계산한다. 호스트만 처리한다.
+        /// 공격 승인 및 공격별 중복 타격 검증은 호출 전에 수행해야 한다.
         /// </summary>
-        public void ApplyDamageToPlayer(SlotId slot, float damage)
+        public void ResolveHit(in HitTarget attacker, in HitTarget target)
         {
-            if (!_authority.IsHost)
+            if (!_authority.IsHost || _state.phase != RunPhase.Playing)
                 return;
 
-            ref var player = ref _state.Players[slot.Value];
-            if (player.LifeState != LifeState.Alive)
+            float finalDamage;
+            switch (attacker.kind)
+            {
+                case HitTargetKind.Player:
+                {
+                    if (attacker.Id < 0 || attacker.Id >= _state.Players.Length)
+                        return;
+
+                    ref var source = ref _state.Players[attacker.Id];
+                    if (!source.IsJoined || source.LifeState != LifeState.Alive)
+                        return;
+
+                    finalDamage = source.Combat.Attack;
+                    break;
+                }
+                default:
+                    // 몬스터/월드의 전투 상태 조회 경로가 추가되면 확장한다.
+                    return;
+            }
+
+            ApplyDamage(attacker, target, finalDamage);
+        }
+
+        /// <summary>
+        /// 서버에서 계산한 최종 데미지를 대상 종류에 맞게 적용한다.
+        /// </summary>
+        private void ApplyDamage(in HitTarget attacker, in HitTarget target, float finalDamage)
+        {
+            if (!_authority.IsHost || _state.phase != RunPhase.Playing)
                 return;
 
-            player.Combat.Hp = Mathf.Max(0f, player.Combat.Hp - damage);
+            if (float.IsNaN(finalDamage) || float.IsInfinity(finalDamage) || finalDamage <= 0f)
+                return;
+
+            switch (target.kind)
+            {
+                case HitTargetKind.Player:
+                    break;
+                default:
+                    // 몬스터/월드의 피해 상태 저장소는 아직 구현되어 있지 않다.
+                    return;
+            }
+
+            if (target.Id < 0 || target.Id >= _state.Players.Length)
+                return;
+
+            ref var player = ref _state.Players[target.Id];
+            if (!player.IsJoined || player.LifeState != LifeState.Alive)
+                return;
+
+            player.Combat.Hp = Mathf.Max(0f, player.Combat.Hp - finalDamage);
             bool down = player.Combat.Hp <= 0f;
             if (down)
             {
@@ -85,12 +204,12 @@ namespace DdaIT.Object.Session
             }
 
             _events.DamageApplied.OnNext(new DamageApplied(
-                attackerSlot: -1,
-                targetKind: 0,
-                slot.Value,
-                damage,
+                attackerSlot: attacker.kind == HitTargetKind.Player ? attacker.Id : -1,
+                targetKind: (int)target.kind,
+                target.Id,
+                finalDamage,
                 player.Combat.Hp,
-                down));
+                player.LifeState));
 
             if (down)
                 TryPartyDown();
@@ -117,10 +236,26 @@ namespace DdaIT.Object.Session
 
         private void TryPartyDown()
         {
+            bool hasJoinedPlayer = false;
+
             for (int i = 0; i < _state.Players.Length; i++)
             {
-                if (_state.Players[i].IsJoined && _state.Players[i].LifeState == LifeState.Alive)
+                ref var player = ref _state.Players[i];
+                if(!player.IsJoined)
+                    continue;
+
+                hasJoinedPlayer = true;
+                if(player.LifeState == LifeState.Alive)
                     return;
+            }
+
+            if(!hasJoinedPlayer)
+                return;
+
+            for (int i = 0; i < _state.Players.Length; i++){
+                if(_state.Players[i].IsJoined && _state.Players[i].LifeState == LifeState.Down){
+                    SetPlayerLifeState(i, LifeState.Dead);
+                }
             }
 
             SetPhase(RunPhase.PartyDown);
@@ -130,7 +265,10 @@ namespace DdaIT.Object.Session
         {
             for (int i = 0; i < _state.Players.Length; i++)
             {
-                _state.Players[i].AnimationParams.AttackPulse = false;
+                ref var p = ref _state.Players[i];
+                var anim = p.AnimationParams;
+                anim.AttackPulse = false;
+                p.AnimationParams = anim;
             }
         }
 
