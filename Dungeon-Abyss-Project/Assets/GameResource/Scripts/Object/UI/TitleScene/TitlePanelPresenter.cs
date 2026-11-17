@@ -3,7 +3,7 @@ using DdaIT.Object.UI;
 using R3;
 using Cysharp.Threading.Tasks;
 
-namespace DdaIT
+namespace DdaIT.Object.UI
 {
     public class TitlePanelPresenter : UIPresenter<TitlePanel>
     {

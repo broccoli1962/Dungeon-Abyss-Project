@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-namespace DdaIT
+namespace DdaIT.Object.UI
 {
     public class OptionPopupPresenter : UIPresenter<OptionPopup>
     {

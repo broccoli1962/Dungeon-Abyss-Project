@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace DdaIT
+namespace DdaIT.Object.UI
 {
     public class OptionPopup : UIPopup<OptionPopupPresenter>
     {

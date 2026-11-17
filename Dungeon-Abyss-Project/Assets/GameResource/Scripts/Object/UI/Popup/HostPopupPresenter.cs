@@ -5,7 +5,7 @@ using DdaIT.Object.UI;
 using R3;
 using Unity.Netcode;
 
-namespace DdaIT
+namespace DdaIT.Object.UI
 {
     public class HostPopupPresenter : UIPresenter<HostPopup>
     {

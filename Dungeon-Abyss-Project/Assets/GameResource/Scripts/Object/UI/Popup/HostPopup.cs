@@ -1,7 +1,7 @@
 using DdaIT.Object.UI;
 using UnityEngine;
 
-namespace DdaIT
+namespace DdaIT.Object.UI
 {
     public class HostPopup : UIPopup<HostPopupPresenter>
     {

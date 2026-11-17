@@ -2,7 +2,7 @@ using DdaIT.Object.UI;
 using TMPro;
 using UnityEngine;
 
-namespace DdaIT
+namespace DdaIT.Object.UI
 {
     public class ClientPopup : UIPopup<ClientPopupPresenter>
     {
