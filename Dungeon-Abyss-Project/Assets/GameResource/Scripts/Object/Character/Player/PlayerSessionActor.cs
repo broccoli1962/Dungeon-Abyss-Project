@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using DdaIT.Object.Management;
 using DdaIT.Object.Session;
+using DdaIT.Object.UI;
 using DdaIT.Util;
+using DdaIT.Util.Input;
 using R3;
 using UnityEngine;
 
@@ -33,10 +36,21 @@ namespace DdaIT.Object.Character.Player
         private bool _hasLifeState;
         private LifeState _lifeState = LifeState.Absent;
 
+        private UiPointerBlockerService _uiPointerService;
+
+        //조회용 참조 변수
+        private InventoryPopup _inventoryPopup;
+        private IDisposable _inventoryCloseSub;
+
+        private bool _ownsInventoryCursor;
+        private CursorLockMode _cursorLockMode;
+        private bool _previousCursorVisible;
+
         public PerceptionController Perception => _perception;
         public SlotId Slot => new SlotId(_slotValue);
         public LifeState CurrentLifeState => _lifeState;
         public bool CanAct => _lifeState == LifeState.Alive;
+
 
         public void Bind(RunEvents events)
         {
@@ -62,6 +76,118 @@ namespace DdaIT.Object.Character.Player
             _combat.CancelAttack();
         }
 
+        public void BindUiPointerService(UiPointerBlockerService service)
+        {
+            if (_uiPointerService == service)
+                return;
+
+            ReleaseUiPointerService();
+
+            _uiPointerService = service;
+            _input.BindUiPointerService(service);
+        }
+
+        private void ToggleInventory()
+        {
+            if (!_hasInputAuthority ||
+             !_gameplayInputEnabled ||
+              !CanAct ||
+               _uiPointerService == null ||
+                GameStateUtil.IsQuitting)
+            {
+                return;
+            }
+
+            if (_inventoryPopup != null)
+            {
+                CloseInventory();
+                return;
+            }
+
+            var popup = UIManager.Open<InventoryPopup>();
+            if (popup == null)
+                return;
+
+            _inventoryPopup = popup;
+
+            _inventoryCloseSub?.Dispose();
+            _inventoryCloseSub = _inventoryPopup.Closed.Subscribe(_ =>
+            {
+                if (_inventoryPopup != popup)
+                    return;
+
+                _inventoryPopup = null;
+                RestoreInventoryCursor();
+
+                _inventoryCloseSub?.Dispose();
+                _inventoryCloseSub = null;
+            });
+
+            popup.Initialize(_uiPointerService);
+
+            AcquireInventoryCursor();
+        }
+
+        private void CloseInventory()
+        {
+            if (_inventoryPopup == null || GameStateUtil.IsQuitting)
+                return;
+
+            _inventoryPopup.RequestClose();
+        }
+
+        public void ReleaseLocalUi()
+        {
+            _inventoryCloseSub?.Dispose();
+            _inventoryCloseSub = null;
+
+            var popup = _inventoryPopup;
+            _inventoryPopup = null;
+
+            ReleaseUiPointerService();
+
+            if (popup != null && !GameStateUtil.IsQuitting)
+                popup.RequestClose();
+
+            if (_input != null)
+                _input.BindUiPointerService(null);
+
+            _uiPointerService = null;
+        }
+
+        private void AcquireInventoryCursor()
+        {
+            if (_ownsInventoryCursor)
+                return;
+
+            _ownsInventoryCursor = true;
+            _cursorLockMode = Cursor.lockState;
+            _previousCursorVisible = Cursor.visible;
+
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+
+        private void RestoreInventoryCursor()
+        {
+            if (!_ownsInventoryCursor)
+                return;
+
+            _ownsInventoryCursor = false;
+
+            if (GameStateUtil.IsQuitting)
+                return;
+
+            Cursor.lockState = _cursorLockMode;
+            Cursor.visible = _previousCursorVisible;
+        }
+
+        private void ReleaseUiPointerService()
+        {
+            _uiPointerService = null;
+            _input.BindUiPointerService(null);
+        }
+
         public void SetInputAuthority(bool hasAuthority)
         {
             _hasInputAuthority = hasAuthority;
@@ -77,7 +203,12 @@ namespace DdaIT.Object.Character.Player
 
         private void RefreshInputListening()
         {
-            _input.SetListening(_hasInputAuthority && _gameplayInputEnabled && CanAct);
+            bool enabled = _hasInputAuthority && _gameplayInputEnabled && CanAct;
+
+            _input.SetListening(enabled);
+
+            if(!enabled)
+                CloseInventory();
         }
 
         public CharacterCommand TickLocal(float deltaTime)
@@ -85,9 +216,19 @@ namespace DdaIT.Object.Character.Player
             bool canReadInput = _hasInputAuthority && _gameplayInputEnabled && CanAct;
 
             LocalInputSnapShot snap = default;
+
             if (canReadInput)
             {
                 snap = _input.Consume();
+
+                if (snap.InventoryPressed)
+                {
+                    ToggleInventory();
+
+                    snap.AttackPressed = false;
+                    snap.Aim = false;
+                }
+
                 _movement.ApplyLocal(snap, deltaTime);
             }
             else
@@ -223,7 +364,7 @@ namespace DdaIT.Object.Character.Player
 
         private void OnWeaponHit(Collider other)
         {
-            if(_isServerBound && !CanAct || other == null)
+            if (_isServerBound && !CanAct || other == null)
                 return;
 
             if (!other.TryGetComponent<IHitReceiver>(out var receiver))
@@ -237,6 +378,8 @@ namespace DdaIT.Object.Character.Player
 
         private void OnDestroy()
         {
+            ReleaseLocalUi();
+            
             _damageSub?.Dispose();
             _hitSub?.Dispose();
         }
@@ -244,7 +387,8 @@ namespace DdaIT.Object.Character.Player
         public bool TryHit(Component attacker, out HitTarget target)
         {
             target = default;
-            if(!CanAct){
+            if (!CanAct)
+            {
                 return false;
             }
 
@@ -252,7 +396,7 @@ namespace DdaIT.Object.Character.Player
             {
                 return false;
             }
-            
+
             target = new HitTarget(HitTargetKind.Player, _slotValue);
             return true;
         }

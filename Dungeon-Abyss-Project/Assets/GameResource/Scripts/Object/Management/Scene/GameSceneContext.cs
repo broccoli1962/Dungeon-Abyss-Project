@@ -7,12 +7,11 @@ using DdaIT.Object.Character.Player;
 using DdaIT.Object.Session;
 using DdaIT.Object.UI;
 using DdaIT.Util.Debug;
+using DdaIT.Util.Input;
 using R3;
 using Unity.Cinemachine;
 using Unity.Netcode;
-using Unity.Services.Lobbies.Models;
 using UnityEngine;
-using UnityEngine.iOS;
 
 namespace DdaIT.Object.Management
 {
@@ -27,8 +26,13 @@ namespace DdaIT.Object.Management
         private GameObject _sessionInstance;
         private PlayerSessionActor[] _actors;
 
+
+
         private RunSession _session;
         private readonly Dictionary<ulong, byte> _clientSlots = new();
+
+        private readonly UiPointerBlockerService _uiPointerService = new();
+        private PlayerSessionActor _localPlayer;
 
         private IDisposable _phaseSub;
         public override async UniTask PreloadAsync()
@@ -42,6 +46,8 @@ namespace DdaIT.Object.Management
             var hudTask = UIManager.PreloadAsync<PlayerHudPanel>();
 
             (_loopPrefab, _playerPrefab, _vcamPrefab, _sessionPrefab) = await UniTask.WhenAll(loopTask, playerTask, vcamTask, sessionTask);
+
+            await UIManager.PreloadAsync<InventoryPopup>();
             await hudTask;
         }
 
@@ -83,6 +89,12 @@ namespace DdaIT.Object.Management
 
             _clientSlots.Clear();
             _session = null;
+
+            if (_localPlayer != null)
+                _localPlayer.ReleaseLocalUi();
+            
+            _localPlayer = null;
+            _uiPointerService.Dispose();
 
             if (_vcamInstance != null)
             {
@@ -169,10 +181,13 @@ namespace DdaIT.Object.Management
             if (localActor == null)
                 return;
 
+            BindLocalUi(localActor);
+
             byte localSlot = localActor.Slot.Value;
 
             var hud = await UIManager.OpenAsync<PlayerHudPanel>();
-            if(localActor.TryGetComponent<PlayerNetwork>(out var localNet)){
+            if (localActor.TryGetComponent<PlayerNetwork>(out var localNet))
+            {
                 hud.Bind(localNet);
             }
 
@@ -211,6 +226,7 @@ namespace DdaIT.Object.Management
                 return;
             }
 
+            BindLocalUi(actor);
             AttachLocalCamera(actor);
             var hud = await UIManager.OpenAsync<PlayerHudPanel>();
             hud.Bind(localPlayer);
@@ -269,7 +285,7 @@ namespace DdaIT.Object.Management
             var player = state.Players[slot];
             player.IsJoined = true;
             player.LifeState = LifeState.Alive;
-            
+
             player.AnimationParams = default;
             player.AnimationParams.LifeState = LifeState.Alive;
             player.Aiming = false;
@@ -286,8 +302,10 @@ namespace DdaIT.Object.Management
 
             _session.Simulation.ResetPlayerTimer(new SlotId(slot));
 
-            if(actor.TryGetComponent<PlayerNetwork>(out var playerNet)){
-                playerNet.ServerSetVitals(new PlayerVital{
+            if (actor.TryGetComponent<PlayerNetwork>(out var playerNet))
+            {
+                playerNet.ServerSetVitals(new PlayerVital
+                {
                     Health = player.Combat.Hp,
                     MaxHealth = player.Combat.MaxHp,
                     Stamina = player.Stamina,
@@ -300,7 +318,8 @@ namespace DdaIT.Object.Management
 
             actor.Bind(_session.Events);
 
-            if(isLocal){
+            if (isLocal)
+            {
                 AttachLocalCamera(actor);
             }
 
@@ -380,5 +399,14 @@ namespace DdaIT.Object.Management
         }
 
         #endregion
+
+        private void BindLocalUi(PlayerSessionActor actor)
+        {
+            if (_localPlayer != null && _localPlayer != actor)
+                _localPlayer.ReleaseLocalUi();
+
+            _localPlayer = actor;
+            _localPlayer.BindUiPointerService(_uiPointerService);
+        }
     }
 }
