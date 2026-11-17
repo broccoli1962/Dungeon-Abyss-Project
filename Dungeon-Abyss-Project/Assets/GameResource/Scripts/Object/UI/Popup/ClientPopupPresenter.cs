@@ -3,7 +3,7 @@ using DdaIT.Object.Management;
 using DdaIT.Object.UI;
 using R3;
 
-namespace DdaIT
+namespace DdaIT.Object.UI
 {
     public class ClientPopupPresenter : UIPresenter<ClientPopup>
     {
