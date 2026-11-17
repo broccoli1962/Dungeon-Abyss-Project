@@ -67,6 +67,8 @@ namespace DdaIT.Object.Character
             if (_actor != null)
             {
                 _actor.SetInputAuthority(false);
+                _actor.ReleaseLocalUi();
+                
                 _actor.UnBind();
                 _actor.ApplyLifeState(LifeState.Absent);
             }

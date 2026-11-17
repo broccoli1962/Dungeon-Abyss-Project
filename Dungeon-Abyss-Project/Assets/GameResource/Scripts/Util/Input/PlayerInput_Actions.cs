@@ -292,6 +292,15 @@ namespace DdaIT.Util.Input
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Inventory"",
+                    ""type"": ""Button"",
+                    ""id"": ""d6015ea7-26df-4863-b25d-83e86aa08070"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -327,6 +336,17 @@ namespace DdaIT.Util.Input
                     ""action"": ""Point"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7c7bcac0-774e-4bf2-8747-96201a41b650"",
+                    ""path"": ""<Keyboard>/i"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Inventory"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -346,6 +366,7 @@ namespace DdaIT.Util.Input
             m_UI_RightClick = m_UI.FindAction("RightClick", throwIfNotFound: true);
             m_UI_LeftClick = m_UI.FindAction("LeftClick", throwIfNotFound: true);
             m_UI_Point = m_UI.FindAction("Point", throwIfNotFound: true);
+            m_UI_Inventory = m_UI.FindAction("Inventory", throwIfNotFound: true);
         }
 
         ~@PlayerInput_Actions()
@@ -581,6 +602,7 @@ namespace DdaIT.Util.Input
         private readonly InputAction m_UI_RightClick;
         private readonly InputAction m_UI_LeftClick;
         private readonly InputAction m_UI_Point;
+        private readonly InputAction m_UI_Inventory;
         /// <summary>
         /// Provides access to input actions defined in input action map "UI".
         /// </summary>
@@ -604,6 +626,10 @@ namespace DdaIT.Util.Input
             /// Provides access to the underlying input action "UI/Point".
             /// </summary>
             public InputAction @Point => m_Wrapper.m_UI_Point;
+            /// <summary>
+            /// Provides access to the underlying input action "UI/Inventory".
+            /// </summary>
+            public InputAction @Inventory => m_Wrapper.m_UI_Inventory;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -639,6 +665,9 @@ namespace DdaIT.Util.Input
                 @Point.started += instance.OnPoint;
                 @Point.performed += instance.OnPoint;
                 @Point.canceled += instance.OnPoint;
+                @Inventory.started += instance.OnInventory;
+                @Inventory.performed += instance.OnInventory;
+                @Inventory.canceled += instance.OnInventory;
             }
 
             /// <summary>
@@ -659,6 +688,9 @@ namespace DdaIT.Util.Input
                 @Point.started -= instance.OnPoint;
                 @Point.performed -= instance.OnPoint;
                 @Point.canceled -= instance.OnPoint;
+                @Inventory.started -= instance.OnInventory;
+                @Inventory.performed -= instance.OnInventory;
+                @Inventory.canceled -= instance.OnInventory;
             }
 
             /// <summary>
@@ -770,6 +802,13 @@ namespace DdaIT.Util.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnPoint(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Inventory" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnInventory(InputAction.CallbackContext context);
         }
     }
 }

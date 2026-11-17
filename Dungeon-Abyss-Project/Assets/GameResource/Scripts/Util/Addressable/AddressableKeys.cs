@@ -14,6 +14,7 @@ namespace DdaIT.AddressableKey
                 { "Goblin", "Assets/GameResource/Prefab/InGame/Monster/Goblin.prefab" },
                 { "Player", "Assets/GameResource/Prefab/InGame/Player/Player.prefab" },
                 { "PlayerFollowCamera", "Assets/GameResource/Prefab/InGame/Player/PlayerFollowCamera.prefab" },
+                { "TestSword", "Assets/GameResource/Prefab/InGame/Weapon/TestSword.prefab" },
             };
 
             public static string Get<T>() => Keys.TryGetValue(typeof(T).Name, out var key) ? key : null;
@@ -79,6 +80,7 @@ namespace DdaIT.AddressableKey
                 { "TitlePanel", "Assets/GameResource/Prefab/UI/Panel/TitlePanel.prefab" },
                 { "ClientPopup", "Assets/GameResource/Prefab/UI/Popup/ClientPopup.prefab" },
                 { "HostPopup", "Assets/GameResource/Prefab/UI/Popup/HostPopup.prefab" },
+                { "InventoryPopup", "Assets/GameResource/Prefab/UI/Popup/InventoryPopup.prefab" },
                 { "OptionPopup", "Assets/GameResource/Prefab/UI/Popup/OptionPopup.prefab" },
             };
 
