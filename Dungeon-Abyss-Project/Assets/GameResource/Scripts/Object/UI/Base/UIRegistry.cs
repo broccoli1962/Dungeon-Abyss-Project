@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace DdaIT.Object.UI
 {
@@ -37,6 +38,14 @@ namespace DdaIT.Object.UI
                     Debug.LogWarning($"[UIRegistry] Layer '{entry.layer}' has no RectTransform assigned.");
                     continue;
                 }
+                // Graphics belong to their nearest Canvas, so a nested layer Canvas
+                // needs its own raycaster even when the UIRoot already has one.
+                if (entry.root.TryGetComponent<Canvas>(out _) &&
+                    !entry.root.TryGetComponent<GraphicRaycaster>(out _))
+                {
+                    entry.root.gameObject.AddComponent<GraphicRaycaster>();
+                }
+
                 _lookup[entry.layer] = entry.root;
             }
         }
