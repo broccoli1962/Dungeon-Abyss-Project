@@ -131,10 +131,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: UIRoot
       objectReference: {fileID: 0}
-    - target: {fileID: 5500066724555569456, guid: ced86671459b78a41b87fb13fb452374, type: 3}
-      propertyPath: m_TagString
-      value: EditorOnly
-      objectReference: {fileID: 0}
     - target: {fileID: 5878050504641106147, guid: ced86671459b78a41b87fb13fb452374, type: 3}
       propertyPath: m_Pivot.x
       value: 0
