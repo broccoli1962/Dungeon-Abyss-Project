@@ -65,6 +65,8 @@ namespace DdaIT.Object.Character.Player
 
         public void Apply(in CharacterPresentation p, float dt)
         {
+            // Animator 재초기화 후에도 상태 전이 조건을 세션의 생명 상태와 동기화한다.
+            SetAnimationInt(LifeHash, (int)_lifeState);
             if(_lifeState != LifeState.Alive){
                 ResetLocomotionParameters();
                 return;
