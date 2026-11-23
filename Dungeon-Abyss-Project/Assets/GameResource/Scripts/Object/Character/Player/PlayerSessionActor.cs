@@ -15,6 +15,7 @@ namespace DdaIT.Object.Character.Player
         public Vector3 MoveDirection;
         public float SpeedRatio;
         public bool IsAiming;
+        public bool IsAttacking;
     }
 
     public class PlayerSessionActor : CachedMonobehaviour, IHitReceiver
@@ -259,6 +260,7 @@ namespace DdaIT.Object.Character.Player
                 MoveDirection = _movement.MoveDirection,
                 SpeedRatio = _movement.SpeedRatio,
                 IsAiming = _movement.IsAiming,
+                IsAttacking = _combat.IsAttacking,
             }, deltaTime);
 
             PushSimulationPoseFromMovement();

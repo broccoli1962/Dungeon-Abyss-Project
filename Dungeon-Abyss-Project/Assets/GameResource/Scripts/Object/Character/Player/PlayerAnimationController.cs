@@ -21,14 +21,17 @@ namespace DdaIT.Object.Character.Player
         private LifeState _lifeState = LifeState.Absent;
         private bool _hasLifeState;
         private int _attackLayer = -1;
-        private float _aliveAttackWeight = 1f;
+        private float _attackWeight;
+        private const float ATTACK_RELEASE_SECONDS = 0.1f;
 
         protected override void Awake()
         {
             base.Awake();
             _attackLayer = _animator.GetLayerIndex("Attack");
-            if(_attackLayer >= 0)
-                _aliveAttackWeight = _animator.GetLayerWeight(_attackLayer);
+            if(_attackLayer >= 0){
+                _attackWeight = _animator.GetLayerWeight(_attackLayer);
+                _animator.SetLayerWeight(_attackLayer, 0f);
+            }
         }
 
         public void ApplyLifeState(LifeState state){
@@ -44,7 +47,7 @@ namespace DdaIT.Object.Character.Player
 
             if(_attackLayer >= 0){
                 _animator.Play(EmptyAttackState, _attackLayer, 0f);
-                _animator.SetLayerWeight(_attackLayer, state == LifeState.Alive ? _aliveAttackWeight : 0f);
+                _animator.SetLayerWeight(_attackLayer, 0f);
             }
 
             switch(state){
@@ -68,6 +71,11 @@ namespace DdaIT.Object.Character.Player
             }
 
             SetAnimationBool(AimHash, p.IsAiming);
+            if(_attackLayer >= 0){
+                float weight = p.IsAttacking ? _attackWeight : Mathf.MoveTowards(
+                    _animator.GetLayerWeight(_attackLayer), 0f, _attackWeight * dt / ATTACK_RELEASE_SECONDS);
+                _animator.SetLayerWeight(_attackLayer, weight);
+            }
             if (p.IsAiming)
             {
                 var local = transform.InverseTransformDirection(p.MoveDirection);
