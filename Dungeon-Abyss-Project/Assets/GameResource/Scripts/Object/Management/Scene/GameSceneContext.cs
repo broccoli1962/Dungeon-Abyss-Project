@@ -24,15 +24,13 @@ namespace DdaIT.Object.Management
         private GameObject _vcamInstance;
         private GameObject _loopInstance;
         private GameObject _sessionInstance;
-        private PlayerSessionActor[] _actors;
-
-
+        private PlayerNetwork[] _players;
 
         private RunSession _session;
         private readonly Dictionary<ulong, byte> _clientSlots = new();
 
         private readonly UiPointerBlockerService _uiPointerService = new();
-        private PlayerSessionActor _localPlayer;
+        private LocalPlayerUi _localUi;
 
         private IDisposable _phaseSub;
         public override async UniTask PreloadAsync()
@@ -77,6 +75,9 @@ namespace DdaIT.Object.Management
             _phaseSub?.Dispose();
             _phaseSub = null;
 
+            _localUi?.Dispose();
+            _localUi = null;
+
             var network = NetworkManager.Singleton;
             if (network != null && network.IsServer)
             {
@@ -90,10 +91,6 @@ namespace DdaIT.Object.Management
             _clientSlots.Clear();
             _session = null;
 
-            if (_localPlayer != null)
-                _localPlayer.ReleaseLocalUi();
-            
-            _localPlayer = null;
             _uiPointerService.Dispose();
 
             if (_vcamInstance != null)
@@ -113,21 +110,21 @@ namespace DdaIT.Object.Management
 
         private void DespawnActors()
         {
-            if (_actors == null)
+            if (_players == null)
                 return;
 
-            for (int i = 0; i < _actors.Length; i++)
+            for (int i = 0; i < _players.Length; i++)
             {
-                if (_actors[i] == null)
+                if (_players[i] == null)
                     continue;
 
-                if (_actors[i].TryGetComponent<NetworkObject>(out var net) && net.IsSpawned)
+                if (_players[i].IsSpawned)
                 {
-                    net.Despawn();
+                    _players[i].NetworkObject.Despawn();
                 }
                 else
                 {
-                    UnityEngine.Object.Destroy(_actors[i].gameObject);
+                    UnityEngine.Object.Destroy(_players[i].gameObject);
                 }
             }
         }
@@ -174,24 +171,17 @@ namespace DdaIT.Object.Management
             }
             _loopInstance = loop.gameObject;
 
-            _actors = new PlayerSessionActor[RunRules.MaxPlayer];
+            _players = new PlayerNetwork[RunRules.MaxPlayer];
 
             var network = NetworkManager.Singleton;
-            var localActor = SpawnJoinedPlayer(network.LocalClientId, isLocal: true);
-            if (localActor == null)
+            var localPlayer = SpawnJoinedPlayer(network.LocalClientId);
+            if (localPlayer == null)
                 return;
 
-            BindLocalUi(localActor);
-
-            byte localSlot = localActor.Slot.Value;
-
+            AttachLocal(localPlayer);
             var hud = await UIManager.OpenAsync<PlayerHudPanel>();
-            if (localActor.TryGetComponent<PlayerNetwork>(out var localNet))
-            {
-                hud.Bind(localNet);
-            }
-
-            loop.Bind(session.Simulation, session.State, _actors, localSlot);
+            hud.Bind(localPlayer);
+            loop.Bind(session.Simulation, session.State, _players);
 
             network.OnClientConnectedCallback += OnClientConnected;
             network.OnClientDisconnectCallback += OnClientDisconnect;
@@ -220,14 +210,13 @@ namespace DdaIT.Object.Management
             }
 
             var localPlayer = await WaitForLocalPlayerAsync(network);
-            if (localPlayer == null || !localPlayer.TryGetComponent<PlayerSessionActor>(out var actor))
+            if (localPlayer == null)
             {
                 Debugger.LogError("Local Player not found");
                 return;
             }
 
-            BindLocalUi(actor);
-            AttachLocalCamera(actor);
+            AttachLocal(localPlayer);
             var hud = await UIManager.OpenAsync<PlayerHudPanel>();
             hud.Bind(localPlayer);
             await UniTask.NextFrame();
@@ -243,7 +232,7 @@ namespace DdaIT.Object.Management
                 return;
             }
 
-            if (SpawnJoinedPlayer(clientId, isLocal: false) == null)
+            if (SpawnJoinedPlayer(clientId) == null)
             {
                 NetworkManager.Singleton.DisconnectClient(clientId);
             }
@@ -262,13 +251,13 @@ namespace DdaIT.Object.Management
             player.LifeState = LifeState.Absent;
             state.Players[slot] = player;
 
-            _actors[slot] = null;
+            _players[slot] = null;
         }
 
         #endregion
 
         #region PlayerSpawn && Camera Attach Methods
-        private PlayerSessionActor SpawnJoinedPlayer(ulong clientId, bool isLocal)
+        private PlayerNetwork SpawnJoinedPlayer(ulong clientId)
         {
 
             if (!TryFindFreeSlot(out byte slot))
@@ -277,8 +266,8 @@ namespace DdaIT.Object.Management
                 return null;
             }
 
-            var actor = SpawnPlayer(slot, clientId);
-            if (actor == null)
+            var playerNet = SpawnPlayer(slot, clientId);
+            if (playerNet == null)
                 return null;
 
             var state = _session.State;
@@ -289,9 +278,9 @@ namespace DdaIT.Object.Management
             player.AnimationParams = default;
             player.AnimationParams.LifeState = LifeState.Alive;
             player.Aiming = false;
-            player.Yaw = actor.CachedTransform.eulerAngles.y;
+            player.Yaw = playerNet.transform.eulerAngles.y;
 
-            player.Position = actor.CachedTransform.position;
+            player.Position = playerNet.transform.position;
             player.Combat.Hp = player.Combat.MaxHp = 20f;
             player.Stamina = player.MaxStamina = 10f;
             player.Hunger = player.MaxHunger = 10f;
@@ -302,30 +291,12 @@ namespace DdaIT.Object.Management
 
             _session.Simulation.ResetPlayerTimer(new SlotId(slot));
 
-            if (actor.TryGetComponent<PlayerNetwork>(out var playerNet))
-            {
-                playerNet.ServerSetVitals(new PlayerVital
-                {
-                    Health = player.Combat.Hp,
-                    MaxHealth = player.Combat.MaxHp,
-                    Stamina = player.Stamina,
-                    MaxStamina = player.MaxStamina,
-                    Hunger = player.Hunger,
-                    MaxHunger = player.MaxHunger,
-                });
-                playerNet.ServerSetLifeState(player.LifeState);
-            }
+            playerNet.ServerPublish(player);
+            playerNet.BindServer(_session.Events);
 
-            actor.Bind(_session.Events);
-
-            if (isLocal)
-            {
-                AttachLocalCamera(actor);
-            }
-
-            _actors[slot] = actor;
+            _players[slot] = playerNet;
             _clientSlots[clientId] = slot;
-            return actor;
+            return playerNet;
         }
 
         private bool TryFindFreeSlot(out byte slot)
@@ -344,27 +315,28 @@ namespace DdaIT.Object.Management
             return false;
         }
 
-        private PlayerSessionActor SpawnPlayer(byte slot, ulong ownerClientId)
+        private PlayerNetwork SpawnPlayer(byte slot, ulong ownerClientId)
         {
             var playerObject = UnityEngine.Object.Instantiate(_playerPrefab, new Vector3(slot * 3, 5, 0), Quaternion.identity);
 
-            if (!playerObject.TryGetComponent<PlayerSessionActor>(out var actor) ||
-                !playerObject.TryGetComponent<PlayerNetwork>(out var playerNet) ||
-                !playerObject.TryGetComponent<NetworkObject>(out var playerObjectNet)
-            )
+            if (!playerObject.TryGetComponent<PlayerNetwork>(out var playerNet) ||
+                !playerObject.TryGetComponent<NetworkObject>(out var playerObjectNet) ||
+                playerNet.Pawn == null || playerNet.LocalDriver == null)
             {
-                Debugger.LogError("PlayerPrefab is Missing Component (PlayerSessionActor, NetworkObject, PlayerSessionActor)");
+                Debugger.LogError("[GameSceneContext] Player 프리팹의 NetworkObject, PlayerNetwork, Pawn, Driver 연결을 확인하세요.");
                 UnityEngine.Object.Destroy(playerObject);
                 return null;
             }
 
             playerNet.PrepareSlot(slot);
             playerObjectNet.SpawnAsPlayerObject(ownerClientId);
-            return actor;
+            return playerNet;
         }
 
-        private void AttachLocalCamera(PlayerSessionActor actor)
+        private void AttachLocal(PlayerNetwork playerNet)
         {
+            _localUi ??= new LocalPlayerUi();
+            _localUi.Bind(playerNet.LocalDriver, _uiPointerService);
             var vcamObject = UnityEngine.Object.Instantiate(_vcamPrefab);
             _vcamInstance = vcamObject;
 
@@ -374,8 +346,8 @@ namespace DdaIT.Object.Management
                 return;
             }
 
-            vcam.Target.TrackingTarget = actor.CachedTransform;
-            actor.SetViewCamera(Camera.main);
+            vcam.Target.TrackingTarget = playerNet.Pawn.CachedTransform;
+            playerNet.Pawn.SetViewCamera(Camera.main);
         }
 
         #endregion
@@ -399,14 +371,5 @@ namespace DdaIT.Object.Management
         }
 
         #endregion
-
-        private void BindLocalUi(PlayerSessionActor actor)
-        {
-            if (_localPlayer != null && _localPlayer != actor)
-                _localPlayer.ReleaseLocalUi();
-
-            _localPlayer = actor;
-            _localPlayer.BindUiPointerService(_uiPointerService);
-        }
     }
 }

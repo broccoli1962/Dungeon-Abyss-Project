@@ -555,6 +555,7 @@ GameObject:
   - component: {fileID: 6533139860597207591}
   - component: {fileID: 3914012278549632603}
   - component: {fileID: -2439346208152281700}
+  - component: {fileID: 2567872301935861464}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -716,14 +717,12 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: df64a0ba56a9596459a442df0e6eda80, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DdaIT.Object.Character.Player.PlayerSessionActor
+  m_EditorClassIdentifier: Assembly-CSharp::DdaIT.Object.Character.Player.PlayerPawn
   _slotValue: 0
-  _input: {fileID: 4709695072577521688}
   _movement: {fileID: 1782770430692539782}
   _combat: {fileID: 3009230164092164904}
   _animation: {fileID: 8624666606708189288}
   _perception: {fileID: 6533139860597207591}
-  _network: {fileID: -2439346208152281700}
 --- !u!114 &6533139860597207591
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -783,7 +782,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DdaIT.Object.Character.PlayerNetwork
   ShowTopMostFoldoutHeaderGroup: 1
-  _actor: {fileID: 7620385657893488093}
+  _pawn: {fileID: 7620385657893488093}
+  _driver: {fileID: 2567872301935861464}
+--- !u!114 &2567872301935861464
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1511804621994429110}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3f5c1043a5c8f04f8aeb7ba056f047b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DdaIT.Object.Character.Player.LocalPlayerDriver
+  _input: {fileID: 4709695072577521688}
+  _pawn: {fileID: 7620385657893488093}
 --- !u!1 &2006658341554533844
 GameObject:
   m_ObjectHideFlags: 0
